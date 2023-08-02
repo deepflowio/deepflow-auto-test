@@ -1,0 +1,9 @@
+vtap_group_id: 
+static_config:
+ afpacket-blocks-enabled: false
+ ebpf:
+  uprobe-process-name-regexs:
+   golang: ".*"
+max_memory: 1024
+max_cpus: 1
+max_collect_pps: 1500
