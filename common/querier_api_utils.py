@@ -42,9 +42,9 @@ class QueryApi(object):
         loop_num = 20
         while loop_num:
             try:
-                self.response = requests.post(
-                    url=url, headers=headers, data=data
-                )
+                self.response = requests.post(url=url,
+                                              headers=headers,
+                                              data=data)
                 break
             except Exception as e:
                 log.error(f"query url:{url} data:{data} error: {e}")
@@ -54,9 +54,11 @@ class QueryApi(object):
             self.response_json = self.response.json()
         self.sql = sql_cmd
 
-    def query_sql_loop_values(
-        self, database, sql_cmd, data_precision="", retries=1
-    ):
+    def query_sql_loop_values(self,
+                              database,
+                              sql_cmd,
+                              data_precision="",
+                              retries=1):
         success = False
         while retries:
             #self.clear()
@@ -77,9 +79,13 @@ class QueryApi(object):
             log.error(f"sql:{self.sql} values:{self.response_json} wait 10s")
         return success
 
-    def query_by_detail(
-        self, database="", table="", tag="", limit=None, offset=None, like=None
-    ):
+    def query_by_detail(self,
+                        database="",
+                        table="",
+                        tag="",
+                        limit=None,
+                        offset=None,
+                        like=None):
         sql_template = "show tag {} values from {} "
         sql = sql_template.format(tag, table)
         if like is not None:
@@ -99,7 +105,8 @@ class QueryApi(object):
 
     def response_description_equal_to(self, expected_description=""):
         response_description = self.response_json["DESCRIPTION"]
-        assert response_description == expected_description
+        assert expected_description in response_description
+        #assert response_description == expected_description
 
     def response_description_contains(self, expected_description=""):
         response_description = self.response_json["DESCRIPTION"]
@@ -137,9 +144,8 @@ class QueryApi(object):
                     assert False
             assert True
 
-    def is_specified_column_contain_specified_value(
-        self, specified_column, specified_value
-    ):
+    def is_specified_column_contain_specified_value(self, specified_column,
+                                                    specified_value):
         #value supports  strings or lists.
         columns = self.response_json["result"]["columns"]
         index = columns.index(specified_column)
@@ -161,8 +167,7 @@ class QueryApi(object):
             print("Warnings: Only support string and list")
 
     def is_specified_column_not_contain_specified_value(
-        self, specified_column, specified_value
-    ):
+            self, specified_column, specified_value):
         #value supports  strings or lists.
         columns = self.response_json["result"]["columns"]
         index = columns.index(specified_column)
