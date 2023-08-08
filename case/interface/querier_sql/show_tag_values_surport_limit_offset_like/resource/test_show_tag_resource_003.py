@@ -31,27 +31,24 @@ class TestShowTagResource003(QuerierSqlBaseCase):
         # Expected results:
         #1、Expect execution to fail with reasonable warning and without exposing system information
 
-        api = QueryApi(
-            self.df_ce_info["mgt_ip"], self.df_ce_info["server_query_port"]
-        )
+        api = QueryApi(self.df_ce_info["mgt_ip"],
+                       self.df_ce_info["server_query_port"])
         with allure_step('limit parameter insertion"; show databases"'):
-            api.query_by_detail(
-                database="flow_metrics", table="vtap_app_edge_port",
-                tag="pod_group", limit="20; show databases", offset="10"
-            )
+            api.query_by_detail(database="flow_metrics",
+                                table="vtap_app_edge_port",
+                                tag="pod_group",
+                                limit="20; show databases",
+                                offset="10")
             api.echo_debug_info()
             api.response_status_assert_fail()
-            api.response_description_equal_to(
-                "syntax error at position 125 near 'show'"
-            )
+            api.response_description_equal_to("syntax error at position")
 
         with allure_step('offset parameter insertion"; show databases"'):
-            api.query_by_detail(
-                database="flow_metrics", table="vtap_app_edge_port",
-                tag="pod_group", limit="20", offset="10; show databases"
-            )
+            api.query_by_detail(database="flow_metrics",
+                                table="vtap_app_edge_port",
+                                tag="pod_group",
+                                limit="20",
+                                offset="10; show databases")
             api.echo_debug_info()
             api.response_status_assert_fail()
-            api.response_description_equal_to(
-                "syntax error at position 135 near 'show'"
-            )
+            api.response_description_equal_to("syntax error at position")

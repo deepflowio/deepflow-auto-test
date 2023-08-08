@@ -31,24 +31,26 @@ log = logger.getLogger()
 
 # generate access key by aliyun ID and SECRET
 clt = None
+ali_vm_password_default = "Yunshan3302!"
 
 
 def get_acsclient():
     global clt
     if not clt:
-        clt = client.AcsClient(
-            os.environ.get('ALICLOUD_ACCESS_KEY'),
-            os.environ.get('ALICLOUD_SECRET_KEY'),
-            os.environ.get('ALICLOUD_REGION')
-        )
+        clt = client.AcsClient(os.environ.get('ALICLOUD_ACCESS_KEY'),
+                               os.environ.get('ALICLOUD_SECRET_KEY'),
+                               os.environ.get('ALICLOUD_REGION'))
     return clt
 
 
 def create_instances_by_deploy(
-    uuid, instance_names, image_id=common_config.ali_image_centos7_419_id,
-    instance_type=common_config.ali_instance_type_n1_medium, vsw_vswitch_id="",
-    zone_id="", env_type=2
-):
+        uuid,
+        instance_names,
+        image_id=common_config.ali_image_centos7_419_id,
+        instance_type=common_config.ali_instance_type_n1_medium,
+        vsw_vswitch_id="",
+        zone_id="",
+        env_type=2):
     data = {"env_uuid": uuid, "action": 1, "envs": []}
     for instance_name in instance_names:
         env = {
@@ -81,7 +83,7 @@ def create_instances_by_deploy(
             assert False
         for instance_name in instance_names:
             if "complate" not in res_json["DATA"][instance_name][
-                "deploy_status"]:
+                    "deploy_status"]:
                 continue
             ip = res_json["DATA"][instance_name]["mgt_ip"]
             if not ip:
@@ -129,10 +131,10 @@ def _send_request(request):
         log.error(err)
 
 
-def create_after_pay_instance(
-    instance_name, image_id, instance_type, security_group_id, vsw_vswitch_id,
-    resource_group_id, password, zone_id, key_pair_name
-):
+def create_after_pay_instance(instance_name, image_id, instance_type,
+                              security_group_id, vsw_vswitch_id,
+                              resource_group_id, password, zone_id,
+                              key_pair_name):
     """create aliyun instance by API, parameter:
     need instance_name, as a string. e.g: instance_name = 'auto-vm1'
     use default values for other parameters
@@ -154,10 +156,8 @@ def create_after_pay_instance(
     response = _send_request(request)
     instance_id = response.get('InstanceId')
     log.info(response)
-    log.info(
-        'aliyun instance creation task was submitted,id:{}'
-        .format(instance_id)
-    )
+    log.info('aliyun instance creation task was submitted,id:{}'.format(
+        instance_id))
     return instance_id
 
 
@@ -192,10 +192,8 @@ def release_instance(instance_id, force=False):
     request.set_InstanceId(instance_id)
     request.set_Force(force)
     _send_request(request)
-    log.info(
-        'aliyun instance status is released, instance id is {}'
-        .format(instance_id)
-    )
+    log.info('aliyun instance status is released, instance id is {}'.format(
+        instance_id))
     return True
 
 
@@ -205,9 +203,7 @@ def get_instance_detail_by_id(instance_id, status='Stopped'):
     status; default, Stopped"""
     log.info(
         'check aliyun instance status is {}, aliyun instance id is {}'.format(
-            status, instance_id
-        )
-    )
+            status, instance_id))
     request = DescribeInstancesRequest()
     request.set_InstanceIds(json.dumps([instance_id]))
     response = _send_request(request)
@@ -261,8 +257,8 @@ def get_instance_by_name_prefix(prefix, pagesize=100):
     for n in range(pagesize):
         if len(response.get('Instances').get('Instance')) <= n:
             break
-        instance_name = response.get('Instances').get('Instance'
-                                                      )[n].get('InstanceName')
+        instance_name = response.get('Instances').get('Instance')[n].get(
+            'InstanceName')
         if instance_name.startswith(prefix):
             for i in range(10):
                 if instance_name in instance_info:
@@ -270,8 +266,7 @@ def get_instance_by_name_prefix(prefix, pagesize=100):
                 else:
                     break
             instance_info[instance_name] = response.get('Instances').get(
-                'Instance'
-            )[n].get('InstanceId')
+                'Instance')[n].get('InstanceId')
     return instance_info
 
 
@@ -294,14 +289,13 @@ def get_instance_info(instance_name, get_type='instance_id', pagesize=20):
             if get_type == 'instance_id' and response.get('Instances').get('Instance')[n].get('InstanceName') == \
                     instance_name[i]:
                 instance_id = response.get('Instances').get('Instance')[n].get(
-                    'InstanceId'
-                )
+                    'InstanceId')
                 instance_info[instance_name[i]] = instance_id
                 break
             elif get_type == 'status' and response.get('Instances').get('Instance')[n].get('InstanceName') == \
                     instance_name[i]:
-                instance_status = response.get('Instances').get('Instance')[
-                    n].get('Status')
+                instance_status = response.get('Instances').get(
+                    'Instance')[n].get('Status')
                 instance_info[instance_name[i]] = instance_status
                 break
             elif get_type == 'private_ip' and response.get('Instances').get('Instance')[n].get('InstanceName') == \
@@ -321,8 +315,8 @@ def get_instance_info(instance_name, get_type='instance_id', pagesize=20):
                 break
             elif get_type == 'instance_name' and response.get('Instances').get('Instance')[n].get('InstanceName') == \
                     instance_name[i]:
-                instance_names = response.get('Instances').get('Instance')[
-                    n].get('InstanceName')
+                instance_names = response.get('Instances').get(
+                    'Instance')[n].get('InstanceName')
                 instance_info[instance_name[i]] = instance_names
                 break
             else:
@@ -335,7 +329,7 @@ def create_instance_action(instance_name, image_id=common_config.ali_image_cento
                            security_group_id=common_config.ali_security_group_default,
                            vsw_vswitch_id=common_config.ali_switch_id_default, \
                            resource_group_id=common_config.ali_resource_group_ie_ee,
-                           password=common_config.ali_vm_password_default,
+                           password=ali_vm_password_default,
                            zone_id=common_config.ali_zone_id_default,
                            key_pair_name=common_config.ali_key_pair_name):
     """create aliyun instance action, parameter;
@@ -346,19 +340,18 @@ def create_instance_action(instance_name, image_id=common_config.ali_image_cento
     private_ip_map = {}
     for i in range(len(instance_name)):
         vm_name = instance_name[i]
-        instance_id = create_after_pay_instance(
-            vm_name, image_id, instance_type, security_group_id,
-            vsw_vswitch_id, resource_group_id, password, zone_id, key_pair_name
-        )
+        instance_id = create_after_pay_instance(vm_name, image_id,
+                                                instance_type,
+                                                security_group_id,
+                                                vsw_vswitch_id,
+                                                resource_group_id, password,
+                                                zone_id, key_pair_name)
         instance_id_info[vm_name] = instance_id
     for vm_name, instance_id in instance_id_info.items():
         if instance_id is not None:
             private_ip = check_instance_running(instance_id)
-            log.info(
-                'aliyun instance status is normal,id:{},name:{}'.format(
-                    instance_id, vm_name
-                )
-            )
+            log.info('aliyun instance status is normal,id:{},name:{}'.format(
+                instance_id, vm_name))
             private_ip_map[instance_id] = private_ip
     time.sleep(40)
     for _, private_ip in private_ip_map.items():
@@ -367,10 +360,9 @@ def create_instance_action(instance_name, image_id=common_config.ali_image_cento
 
 
 def insert_ali_id_rsa(private_ip):
-    ssh = ssh_pool.get(
-        private_ip, common_config.ssh_port_default,
-        common_config.ssh_username_default, common_config.ssh_password_default
-    )
+    ssh = ssh_pool.get(private_ip, common_config.ssh_port_default,
+                       common_config.ssh_username_default,
+                       common_config.ssh_password_default)
     ali_id_rsa = common_config.ali_id_rsa
     if not ali_id_rsa:
         p = run_cmd("cat aliyun_id_rsa")
@@ -399,10 +391,8 @@ def modify_instance_name_action(instance_name_info, instance_new_name):
         response = _send_request(request)
         instance_names = response.get('InstanceName')
         if instance_names == None:
-            log.info(
-                'aliyun instance name is modified now,id:{},new name:{}'
-                .format(instance_id, instance_new_name)
-            )
+            log.info('aliyun instance name is modified now,id:{},new name:{}'.
+                     format(instance_id, instance_new_name))
             instance_new_name_info[instance_id] = instance_new_name
         return instance_new_name_info
 
@@ -413,20 +403,14 @@ def delete_instance_action(instance_id_info):
     """
     for instance_name, instance_id in instance_id_info.items():
         stop_instance(instance_id, force_stop=True)
-        log.info(
-            'wait 30s,aliyun instance is stopping. id:{},name:{}'.format(
-                instance_id, instance_name
-            )
-        )
+        log.info('wait 30s,aliyun instance is stopping. id:{},name:{}'.format(
+            instance_id, instance_name))
         time.sleep(3)
     time.sleep(10)
     for instance_name, instance_id in instance_id_info.items():
         release_instance(instance_id, force=True)
-        log.info(
-            'aliyun instance has been deleted.id:{},name:{}'.format(
-                instance_id, instance_name
-            )
-        )
+        log.info('aliyun instance has been deleted.id:{},name:{}'.format(
+            instance_id, instance_name))
 
         # instance_status = get_instance_info([instance_name],
         #                                     get_type='status')
@@ -452,9 +436,9 @@ def delete_instance_action(instance_id_info):
 
 ##########VPC##########
 def create_vpc_without_subnet(
-    vpc_name, vpc_cidr,
-    resource_group_id=common_config.ali_resource_group_ie_ee
-):
+        vpc_name,
+        vpc_cidr,
+        resource_group_id=common_config.ali_resource_group_ie_ee):
     """
     create aliyun vpc without subnet. parameter;
     vpc_name; required, type is string
@@ -474,9 +458,8 @@ def create_vpc_without_subnet(
         return vpc_id
     except Exception as err:
         log.error(
-            'create aliyun vpc without subnet failed, log info:\n{}'
-            .format(err)
-        )
+            'create aliyun vpc without subnet failed, log info:\n{}'.format(
+                err))
 
 
 def get_vpc_info_by_id(vpc_id, vpc_type='name'):
@@ -503,9 +486,9 @@ def get_vpc_info_by_id(vpc_id, vpc_type='name'):
 
 
 def create_vpc_without_subnet_action(
-    vpc_name, vpc_cidr,
-    resource_group_id=common_config.ali_resource_group_ie_ee
-):
+        vpc_name,
+        vpc_cidr,
+        resource_group_id=common_config.ali_resource_group_ie_ee):
     """create vpc without subnet. parameter;
     vpc_name; required, vpc name, type is list
     vpc_cidr; required, vpc cidr, type is list
@@ -515,18 +498,14 @@ def create_vpc_without_subnet_action(
     vpc_id_info = dict()
     for i in range(len(vpc_name)):
         try:
-            vpc_id = create_vpc_without_subnet(
-                vpc_name[i], vpc_cidr[i], resource_group_id
-            )
+            vpc_id = create_vpc_without_subnet(vpc_name[i], vpc_cidr[i],
+                                               resource_group_id)
             while index <= 60:
-                if get_vpc_info_by_id(
-                    vpc_id, vpc_type='status'
-                ) == 'Available':
+                if get_vpc_info_by_id(vpc_id,
+                                      vpc_type='status') == 'Available':
                     log.info(
                         'aliyun vpc has been created,vpc id:{},cidr:{}'.format(
-                            vpc_id, vpc_name[i], vpc_cidr[i]
-                        )
-                    )
+                            vpc_id, vpc_name[i], vpc_cidr[i]))
                     vpc_id_info[vpc_name[i]] = vpc_id
                     break
                 else:
@@ -551,16 +530,13 @@ def modify_vpc_name_without_subnet(vpc_id_info, vpc_new_name):
             request.set_VpcName('%s' % (vpc_new_name))
             request.set_accept_format('JSON')
             response = get_acsclient().do_action(request)
-            log.info(
-                'aliyun vpc has been modified, vpc id; {}, vpc name: {}'
-                .format(vpc_id, vpc_new_name)
-            )
+            log.info('aliyun vpc has been modified, vpc id; {}, vpc name: {}'.
+                     format(vpc_id, vpc_new_name))
             vpc_new_id_info[vpc_new_name] = vpc_id
             return vpc_new_id_info
         except Exception as err:
             log.error(
-                'aliyun vpc has not been modified, log info; \n{}'.format(err)
-            )
+                'aliyun vpc has not been modified, log info; \n{}'.format(err))
 
 
 def delete_vpc_without_subnet_action(vpc_id_info):
@@ -575,13 +551,10 @@ def delete_vpc_without_subnet_action(vpc_id_info):
             response = get_acsclient().do_action(request)
             log.info(
                 'aliyun vpc has been deleted, vpc id; {}. vpc name: {}'.format(
-                    vpc_id, vpc_name
-                )
-            )
+                    vpc_id, vpc_name))
         except Exception as err:
             log.error(
-                'aliyun vpv has not been deleted, log info; \n{}'.format(err)
-            )
+                'aliyun vpv has not been deleted, log info; \n{}'.format(err))
 
 
 def create_linux_vm_x86(vm_name, type="k8s"):
@@ -593,10 +566,8 @@ def create_linux_vm_x86(vm_name, type="k8s"):
         pass
 
     vm_id_info = create_instance_action([vm_name], image_id=image_id)
-    log.info(
-        "VirtualMachine::create_linux_vm_x86::vm_id_info ==> {}"
-        .format(vm_id_info)
-    )
+    log.info("VirtualMachine::create_linux_vm_x86::vm_id_info ==> {}".format(
+        vm_id_info))
 
     vm_name_ip_dict = get_instance_info([vm_name], get_type='private_ip')
     vm_ip = vm_name_ip_dict[vm_name]
@@ -606,11 +577,11 @@ def create_linux_vm_x86(vm_name, type="k8s"):
 
 def create_linux_vm_arm(arm_vm_name):
     vm_id_info = create_instance_action(
-        [arm_vm_name], image_id=common_config.ali_image_anolis_performance_id,
+        [arm_vm_name],
+        image_id=common_config.ali_image_anolis_performance_id,
         instance_type=common_config.ali_instance_type_g6r_large,
         vsw_vswitch_id=common_config.ali_switch_id_arm,
-        zone_id=common_config.ali_zone_id_beijing_k
-    )
+        zone_id=common_config.ali_zone_id_beijing_k)
     vm_name_ip_dict = get_instance_info([arm_vm_name], get_type='private_ip')
     vm_ip = vm_name_ip_dict[arm_vm_name]
     log.info("create_linux_vm_arm::vm_id_info ==> {}".format(vm_id_info))
