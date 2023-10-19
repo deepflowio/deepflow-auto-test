@@ -1,0 +1,14 @@
+from gradle:6.9.3-jdk8
+
+run mkdir /monkey
+copy ./monkey101 /monkey
+
+workdir /monkey
+run gradle build
+
+workdir /monkey/build/libs
+cmd java -jar monkey-1.0.0.jar
+
+
+
+

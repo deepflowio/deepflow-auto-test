@@ -1,0 +1,93 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: krpc-demo
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: krpc-server
+  namespace: krpc-demo
+  labels:
+    app: krpc-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: krpc-server
+  template:
+    metadata:
+      labels:
+        app: krpc-server
+    spec:
+      containers:
+      - name: krpc-server
+        image: registry.cn-beijing.aliyuncs.com/deepflow-demo/krpc-server:latest
+        ports:
+        - containerPort: 7455
+        - containerPort: 8455
+        - containerPort: 6455
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: krpc-serv
+  namespace: krpc-demo
+spec:
+  selector:
+    app: krpc-server
+  ports:
+    - protocol: TCP
+      name: server
+      port: 7455
+      targetPort: 7455 
+    - protocol: TCP
+      name: unknown1
+      port: 8455
+      targetPort: 8455
+    - protocol: TCP
+      name: unknown2
+      port: 6455
+      targetPort: 6455
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: krpc-gateway
+  namespace: krpc-demo
+  labels:
+    app: krpc-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: krpc-gateway
+  template:
+    metadata:
+      labels:
+        app: krpc-gateway
+    spec:
+      containers:
+      - name: krpc-gateway
+        image: registry.cn-beijing.aliyuncs.com/deepflow-demo/krpc-gateway:latest
+        ports:
+        - containerPort: 8450
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: krpc-gw
+  namespace: krpc-demo
+spec:
+  selector:
+    app: krpc-gateway
+  ports:
+    - protocol: TCP
+      name: gateway
+      port: 8450
+      targetPort: 8450
+

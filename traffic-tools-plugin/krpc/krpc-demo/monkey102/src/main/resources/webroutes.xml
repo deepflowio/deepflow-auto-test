@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<routes>
+
+    <group hosts="*"  origins="*" methods="get,post"  prefix="/v1/openapi"  serviceId="455"  needLogin="true" >
+        <url path="/queryPriceRule" msgId="30"  />
+    </group>
+
+</routes>
+
+

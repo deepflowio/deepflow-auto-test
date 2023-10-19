@@ -1,0 +1,69 @@
+syntax="proto3";
+
+import "krpcext.proto";
+option java_multiple_files=true;
+option java_generic_services=true;
+
+option java_package="com.saicmobility.common.monkeyservice.api";
+option java_outer_classname="MonkeyServiceMetas";
+// proto_version="1.0.14"
+
+service MonkeyService {
+
+	option (krpc.serviceId) = 103;
+
+	rpc runTest(RunTestReq)
+	    returns (RunTestRes)  { option (krpc.msgId) = 1; };
+
+	rpc upload(UploadReq)
+	    returns (UploadRes)  { option (krpc.msgId) = 2; };
+
+	rpc download(DownloadReq)
+	    returns (DownloadRes)  { option (krpc.msgId) = 3; };
+}
+
+message RunTestReq {
+	int32 testCase = 1;
+	string param = 2;
+}
+
+message RunTestRes {
+	int32 retCode = 1;
+	string retMsg = 2;
+	string txt = 3;
+	int32  num = 4;
+}
+
+message UploadFile {
+    string file = 1;
+    string filename = 2;
+    int64 size = 3;
+    string ext = 4;
+    string contentType = 5;
+}
+
+message UploadReq {
+	int32 testCase = 1;
+	repeated UploadFile files = 2;
+}
+
+message UploadRes {
+	int32 retCode = 1;
+	string retMsg = 2;
+}
+
+
+message DownloadReq {
+	int32 testCase = 1;
+}
+
+message DownloadRes {
+	int32 retCode = 1;
+	string retMsg = 2;
+
+    string downloadFile = 3; //  对应本地盘上的一个文件的绝对路径
+    string autoDelete = 4; //  下载完毕后是否自动删除  1=是  0=否（默认）
+    int32 attachment = 5; //  附件方式下载还是嵌入方式 1=下载 0=嵌入
+    string forceFilename = 6; // 下载文件名，可中文，出现在另存为对话框的文件名,  可不指定，如不指定，则按 downloadFile 本身的文件名进行下载
+}
+
