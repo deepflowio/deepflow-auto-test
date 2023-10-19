@@ -1,0 +1,451 @@
+syntax = "proto3";
+
+import "krpcext.proto";
+
+option java_multiple_files = true;
+option java_generic_services = true;
+
+option java_package = "com.saicmobility.pay.payactivity.api";
+option java_outer_classname = "PayActivityServiceMetas";
+// proto_version="1.0.29"
+
+/////////////////////////////////
+message CurrentUser {
+  int64 userId = 1;
+  string userName = 2;
+  string realName = 3;
+}
+message AddEntDepositActivityReq{
+  CurrentUser currentUser = 1;//登陆人
+  EntDepositActivity entDepositActivity = 2;//企业充值活动
+  repeated GradientRewardModel list = 3;//企业充值梯度列表
+}
+
+
+message AddEntDepositActivityRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+message EntDepositActivity{
+  int64 activityId = 1;// 活动id
+  string activityName = 2;// 活动名称
+  string preStartTime = 3;//  预热开始时间
+  string preEndTime = 4;// 预热结束时间
+  string activityDesc = 5;// 活动说明
+  string startTime = 6;//活动开始时间
+  string endTime = 7;//活动结束时间
+  int32 limitFirstDeposit = 8;// 限制首充 0=不限 1=限制
+  int32 totalActivityCount = 9;// 总活动次数
+  int32 entActivityCount = 10;// 单个企业活动次数
+  string depositPayChannel = 11;// 充值渠道 支付宝,微信,线下汇款
+  int32 limitSignatory = 12;// 签约方限制
+  int32 limitType = 13;// 限制类型 0=不限制 1=限制指定城市 2=限制指定企业
+  string cityCodeString = 14;// 城市code串 310100,320100  limitType=1有值
+  string entIdString = 15;// 企业id串 1,2,3,4,5  limitType=2有值
+  int64 limitReward = 16;//奖励金额上限 单位分
+}
+
+
+message GradientRewardModel{
+  int64 id = 1;//梯度奖励id
+  int64 amount = 2; //充值金额 单位分
+  int64 reward = 3;//赠送金额 单位分
+  int32 rewardType = 4 ;// 奖励类型，1 权益金2优惠券3 权益金和优惠券
+  int32 rewardAmountType = 5; //奖励金额类型 1=固定金额  单位分  2=百分比 99.99%=9999
+  repeated EntCouponTemplate entCouponTemplates = 6 ;// 奖励类型包含优惠券时赋值列表
+  int64 totalAmount = 7 ; // 总面额(当前梯度 )
+  int64 totalCount = 8  ; // 总张数 （当前梯度）
+
+}
+
+message EntCouponTemplate {
+  string templateName = 1; //模板名称
+  int64 templateId = 2; // 模板主键
+  string description = 3; //优惠券模板描述
+  int64 count = 4 ;// 发放数量
+  int64 amount = 5 ; // 面额
+  int32 discountType = 6; //优惠券折扣类型
+  int64 usageThreshold = 7; //优惠券使用门槛
+  int64 discount = 8; //优惠券折扣金额
+  int64 maxDiscountAmount = 9; //优惠券最大折扣金额
+}
+
+
+
+message UpdateEntDepositActivityReq{
+  CurrentUser currentUser = 1;//登陆人
+  EntDepositActivity entDepositActivity = 2;//企业充值活动
+  repeated GradientRewardModel list = 3;//企业充值梯度列表
+
+}
+message UpdateEntDepositActivityRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+
+message QueryEntDepositActivityReq{
+  CurrentUser currentUser = 1;//登陆人
+
+  int64 activityId = 2;//活动id
+
+}
+message QueryEntDepositActivityRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+  EntDepositActivity entDepositActivity = 3;//企业充值活动
+  repeated GradientRewardModel list = 4;//企业充值梯度列表
+}
+
+message QueryEntActivityListForMisReq{
+  string activityName = 1;// 活动名称
+  int32 signatory = 2;// 1=安吉 2=赛可
+  int32 activityStatus = 3;// 1=待生效  2=生效中 3=已废弃
+  string startTime = 4;// 开始时间
+  string endTime = 5;// 结束时间
+  int32 pageNo = 6;//页码
+  int32 pageSize = 7;//页数
+}
+
+message QueryEntActivityListForMisRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+  repeated EntActivityInfo list = 3;//
+  int32 pageCount = 4;//页数
+  int32 rowCount = 5;//行数
+}
+message EntActivityInfo {
+  string activityName = 1; // 活动名称
+  string preStartTime = 2; // 预开始时间
+  int32 signatory = 3; // 1=安吉 2=赛可 0=全部
+  string rewardTypeText = 4; // 奖励类型文案
+  string activityTime = 5; // 活动时间
+  int32 activityStatus = 6; // 活动状态
+  int64 id = 7; //活动ID
+  string startTime = 8;//活动开始时间
+  string endTime = 9;//活动结束时间
+  int32 rewardType = 10 ;// 奖励类型，1 权益金2优惠券3 权益金和优惠券
+}
+
+message DisableEntDepositActivityReq{
+  CurrentUser currentUser = 1;//登陆人
+  int64 activityId = 2;//活动id
+}
+message DisableEntDepositActivityRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+
+message WebQueryEntDepositActivityLogReq{
+  int64 activityId = 1;//活动id
+  CurrentUser currentUser = 2; //当前操作用户
+}
+
+message WebQueryEntDepositActivityLogRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+  repeated DepositActivityLogModel depositActivityLog = 3;//日志
+}
+message DepositActivityLogModel {
+  int32 id = 1; //日志id
+  int64 depositActivityId = 2; //充值活动id
+  int32 operationType = 3; //操作类型(1:增加,2:修改,3:审核,4:废弃)
+  string operationContent = 4; //操作内容
+  string operationBeforeInfo = 5; //操作之前快照
+  string operationAfterInfo = 6; //操作之后的快照
+  int64 operatorId = 7; //操作人id
+  string operatorUserName = 8; //操作人用户名
+  string operatorRealName = 9; //操作人真实名字
+  string operationTime = 10; //操作时间
+  string createTime = 11; //创建时间
+}
+
+message QueryUserDepositActivityReq{
+  string appId = 201;//乘客端appId
+  string cityCode = 202; //用户所在城市
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  int32 payChannel = 3;//支付渠道 筛选条件 0=自动获取depsoitchannel渠道顺位第一个 -1不筛选渠道
+  int64 capitalAmount = 4;//用户手输本金
+  int32 pageNo = 5;//梯度页码
+  int32 pageSize = 6;//梯度页数
+  string depositDate = 7;//充值日期yyyy-MM-dd HH:mm:ss
+  int32 activityType = 8;//查询活动类型. 1:日常 2:限量
+  string promoKey = 9;//推广key  normal 普通活动  policy 策略活动   candle 烛照
+  string promoUniqueId=10;// 推广活动id 有则使用 无则最优计算
+}
+
+message QueryUserDepositActivityRes{
+  string cityCode = 202;
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+  string startDate = 3; //当前活动有效期开始日期yyyy-MM-dd
+  string endDate = 4; //当前活动有效期结束日期yyyy-MM-dd
+  int32 rowCount = 5; //总条数
+  int32 pageCount = 6; //总页数
+  repeated DepositTemplate list = 7; //明细
+  int64 balance = 8;//总余额
+  int64 limitAmount = 9;//上限金额
+  int32 isCustomAmount = 11;// 是否为自定义梯度 0=不是 1=是 (则无需使用梯度金额）
+  int64 equityAmount = 12;// 返现权益金额 单位分
+  string preStartTime = 13;//预热开始时间 yyyy-MM-dd HH:mm:ss
+  string preEndTime = 14;//预热结束时间 yyyy-MM-dd HH:mm:ss
+  int64 activityId = 15;//活动id
+  int64 minAmount = 16; //企业最小充值金额
+  string activtyName = 17;//活动名称
+  string activityDesc = 18;//活动描述
+  int32 activityType = 19; //活动类型 活动类型，1=日常，2=限时限量
+  int32 firstDeposit = 20; //是否首充，1 是，0否
+  int32 rewardType = 21 ;// 奖励类型，1 权益金2优惠券3 权益金和优惠券（当前手输）
+  int64 totalAmount = 22 ; // 总面额（当前手输）
+  int64 totalCount = 23 ; // 总张数（当前手输）
+  int64 gradientRewardId = 24;//梯度id （当前手输）
+  repeated EntCouponTemplate entCouponTemplates = 25 ;// 奖励类型包含优惠券时赋值列表（当前手输）
+  int32 enableShare=26;// 0=不开启 1=开启分享
+  string marketPic=27;//营销图片
+  SharePageConfig cornerShare = 28; // 右上角分享文案配置
+  SharePageConfig btnShare = 29; // 按钮分享文案配置
+
+}
+// 分享文案配置信息
+message SharePageConfig {
+    string shareTitle = 1; // 分享标题
+    int32 shareLogoType = 2; // 1=系统默认logo 2=自定义logo
+    string shareLogo = 3; // 分享Logo图片Url
+    string shareDesc = 4; // 分享文案
+}
+message DepositTemplate{
+  int64 capitalAmount = 1; //本金，分
+  int64 equityAmount = 2; //权益金，分
+  int64 depositActivityId = 3;//充值活动id
+  int64 gradientRewardId = 4;//梯度id
+  int32 availableDeposit = 5;// 0=不可用 1=可用
+  int64 firstDepositReward = 6; // 首次充值额外奖励 ，日常活动使用
+  int64 limitedNumber = 7;      // 限定份数 限时限量活动使用
+  int32 status = 8; // 销售状态，0 不可销售，1 可销售，2 已售罄
+  int32 rewardType = 9 ;// 奖励类型，1 权益金2优惠券3 权益金和优惠券
+  repeated EntCouponTemplate entCouponTemplates = 10 ;// 奖励类型包含优惠券时赋值列表
+  int64 totalAmount = 11 ; // 总面额
+  int64 totalCount = 12 ; // 总张数
+  string marketDesc=13;//梯度营销文案
+  string marketTitle=14;//梯度营销标题
+  string promoUniqueId=15;//推广唯一id
+  string promoKey = 16;//推广key  入参带回
+
+}
+
+message DepositActivityCheckReq{
+  string appId = 201;//乘客端appId
+  string cityCode = 202;
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  int32 payChannel = 3;//支付渠道 筛选条件 0=不筛选
+  string depositActivityInfo = 15;//活动信息 {"depositActivityId"xxx,"gradientRewardId":xxx, capitalAmount :xxx,equityAmount ：xxx ，"rewardType":奖励类型，“entCouponTemplates”:企业优惠券奖励模板列表JSON格式 }
+  string depositDate = 16;//汇款日期
+  PromoParam promoParam =26;//命中推广参数信息
+}
+
+
+
+message PromoParam{
+    string promoKey=1;//推广key
+    string promoUniqueId=2;//推广唯一id
+}
+
+message DepositActivityCheckRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+  int32 available = 3;//  0=不通过 1=校验通过 符合活动金额
+  string unAvailableReason = 4;// 不通过原因
+}
+
+message AddDepositCountReq{
+  string appId = 201;//乘客端appId
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  string depositActivityInfo = 15;//活动信息 {"depositActivityId"xxx,"gradientRewardId":xxx, capitalAmount :xxx,equityAmount ：xxx}
+  int32 depositWay = 3;//充值途径 1=线上 2=线下
+  string remark = 4;//发起充值，充值完成 , 审核驳回，审核通过
+  string depositNo = 5;//充值单号  幂等
+  string depositInfo = 6;//充值信息{}  扩展信息
+  int64 capitalAmount = 7;//充值本金
+  int64 equityAmount = 8;//权益金
+}
+
+message AddDepositCountRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+  int32 available = 3;//  0=累计失败 1=累计成功
+  string unAvailableReason = 4;// 失败原因
+  int32  nextAction = 5;// 操作指示  1=原路退回(累计失败) 2=不返现充值(累计成功但超次数不返现)
+}
+message LockDepositCountReq{
+  string appId = 201;//乘客端appId
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  string depositActivityInfo = 15;//活动信息 {"depositActivityId"xxx,"gradientRewardId":xxx, capitalAmount :xxx,equityAmount ：xxx}
+  int32 depositWay = 3;//充值途径 1=线上 2=线下
+  string remark = 4;//发起充值，充值完成 , 审核驳回，审核通过
+  string depositNo = 5;//充值单号 线下为出纳号
+  string depositInfo = 6;//充值信息{}  扩展信息
+}
+message LockDepositCountRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+}
+
+message UnLockDepositCountReq{
+  string appId = 201;//乘客端appId
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  string depositActivityInfo = 15;//活动信息 {"depositActivityId"xxx,"gradientRewardId":xxx, capitalAmount :xxx,equityAmount ：xxx}
+  int32 depositWay = 3;//充值途径 1=线上 2=线下
+  string remark = 4;//发起充值，充值完成 , 审核驳回，审核通过
+  string depositNo = 5;//充值单号 线下为出纳号
+  string depositInfo = 6;//充值信息{}  扩展信息
+}
+
+message UnLockDepositCountRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+}
+
+message LockToAddDepositCountReq{
+  string appId = 201;//乘客端appId
+  string merchantId = 203;
+  int32 useEas = 1;//是否企业 0=个人 1=企业
+  string userId = 2;//用户id  0=乘客id  1=企业id
+  string depositActivityInfo = 15;//活动信息 {"depositActivityId"xxx,"gradientRewardId":xxx, capitalAmount :xxx,equityAmount ：xxx}
+  int32 depositWay = 3;//充值途径 1=线上 2=线下
+  string remark = 4;//发起充值，充值完成 , 审核驳回，审核通过
+  string depositNo = 5;//充值单号 线下为出纳号
+  string depositInfo = 6;//充值信息{}  扩展信息
+}
+
+message LockToAddDepositCountRes{
+  int32 retCode = 1; //响应code
+  string retMsg = 2; //响应msg
+}
+
+message DepositActivityRewardShipReq{
+    string payOrderId=1;// 充值单id
+    string depositActivityInfo=2;// 充值活动信息 {}
+    string paySuccessTime=3;// 充值成功时间 yyyy-MM-dd HH:mm:ss
+    string appId = 4;//应用
+    string userId = 5;//用户id
+    string cityCode=6;//城市编码
+    PromoParam promoParam =26;//命中推广参数信息
+}
+message DepositActivityRewardShipRes{
+    int32 retCode=1;//
+    string retMsg=2;//
+    int64 activityOrderId=3;//活动订单id
+}
+
+message DepositActivityRewardReturnReq{
+    string payOrderId=1;// 充值单id
+    string refundApplyNo=2;// 退款id
+    string refundTime=3;// 退款时间
+}
+message DepositActivityRewardReturnRes{
+    int32 retCode=1;//
+    string retMsg=2;//
+    int64 activityOrderId=3;//活动订单id
+}
+
+message QueryDepositActivityRewardShipReq {
+  string payOrderId = 1; // 通知订单号
+  string depositActivityInfo = 2; // 充值活动信息
+  PromoParam promoParam =3;//命中推广参数信息
+}
+
+message QueryDepositActivityRewardShipRes {
+  int32 retCode = 1; //
+  string retMsg = 2; //
+  repeated ShipReward shipReward = 3;
+}
+
+message ShipReward {
+  int32 rewardDetailType = 1;//奖励明细类型 奖励明细类型 1=权益金(见充值单) 2=优惠券 3=商户券
+  int64 equityAmount = 2;//权益金 分
+  int64 batchId = 3;//个人券/商户券批次id
+  int32 batchCount = 4;//'个人券/商户券批次数量
+}
+
+message QueryDepositPromoActivityInfoReq{
+    string promoKey =1;//充值活动推广key
+    string promoUniqueId=2;//推广唯一id
+}
+
+message QueryDepositPromoActivityInfoRes{
+    int32 retCode = 1; //响应code
+    string retMsg = 2; //响应msg
+    string activityRuleDesc = 3;//活动规则描述
+}
+
+
+service PayActivityService{
+  //支付活动系统服务
+  option (krpc.serviceId) = 350;
+
+
+  rpc addEntDepositActivity(AddEntDepositActivityReq)
+      returns (AddEntDepositActivityRes){option (krpc.msgId) = 1;}; //添加企业充值活动
+
+
+  rpc updateEntDepositActivity(UpdateEntDepositActivityReq)
+      returns (UpdateEntDepositActivityRes){option (krpc.msgId) = 2;}; //修改企业充值活动
+
+  rpc queryEntDepositActivity(QueryEntDepositActivityReq)
+      returns (QueryEntDepositActivityRes){option (krpc.msgId) = 3;}; //查询企业充值活动
+
+  rpc queryEntActivityListForMis(QueryEntActivityListForMisReq)
+      returns (QueryEntActivityListForMisRes){option (krpc.msgId) = 4;}; //查询企业活动列表
+
+  rpc disableEntDepositActivity(DisableEntDepositActivityReq)
+      returns (DisableEntDepositActivityRes){option (krpc.msgId) = 5;}; //停用企业充值活动
+
+  rpc webQueryEntDepositActivityLog(WebQueryEntDepositActivityLogReq)
+      returns (WebQueryEntDepositActivityLogRes){option (krpc.msgId) = 6;}; //查询企业充值活动日志
+
+  rpc queryUserDepositActivity(QueryUserDepositActivityReq)
+      returns (QueryUserDepositActivityRes){option (krpc.msgId) = 7;}; //查询用户符合的活动
+
+
+  rpc depositActivityCheck(DepositActivityCheckReq)
+      returns (DepositActivityCheckRes){option (krpc.msgId) = 8;}; //	发起充值活动校验
+
+  rpc addDepositCount(AddDepositCountReq)
+      returns (AddDepositCountRes){option (krpc.msgId) = 9;}; //累计充值次数
+
+
+  rpc lockDepositCount(LockDepositCountReq)
+      returns (LockDepositCountRes){option (krpc.msgId) = 10;}; //锁定充值次数
+
+  rpc unLockDepositCount(UnLockDepositCountReq)
+      returns (UnLockDepositCountRes){option (krpc.msgId) = 11;}; //释放锁定充值次数
+
+  rpc lockToAddDepositCount(LockToAddDepositCountReq)
+      returns (LockToAddDepositCountRes){option (krpc.msgId) = 12;}; //	锁定转累计充值次数
+
+  rpc depositActivityRewardShip(DepositActivityRewardShipReq)
+      returns (DepositActivityRewardShipRes){option (krpc.msgId) = 13;}; //	充值发送活动奖励
+
+  rpc depositActivityRewardReturn(DepositActivityRewardReturnReq)
+      returns (DepositActivityRewardReturnRes){option (krpc.msgId) = 14;}; //	充值退款发起奖励作废
+
+  rpc queryDepositActivityRewardShip(QueryDepositActivityRewardShipReq)
+      returns (QueryDepositActivityRewardShipRes){option (krpc.msgId) = 15;}; //	充值退款发起奖励
+
+  rpc queryDepositPromoActivityInfo (QueryDepositPromoActivityInfoReq)
+      returns (QueryDepositPromoActivityInfoRes){option (krpc.msgId) = 16;}; //	查询充值推广活动详情
+
+}
+
+
+
+

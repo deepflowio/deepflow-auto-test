@@ -1,0 +1,2099 @@
+syntax = "proto3";
+
+import "krpcext.proto";
+
+option java_multiple_files = true;
+option java_generic_services = true;
+
+option java_package = "com.saicmobility.trip.openapi.api";
+option java_outer_classname = "OpenApiMetas";
+// proto_version="1.0.178"
+
+service OpenApi {// openApi rpc服务
+
+  option (krpc.serviceId) = 455;
+
+  rpc  queryPriceRule (OpenQueryPriceRuleReq) returns (OpenQueryPriceRuleRes){option (krpc.msgId) = 30;};// 查询计价规则
+
+  rpc  queryPriceRuleV2 (OpenQueryPriceRuleV2Req) returns (OpenQueryPriceRuleV2Res){option (krpc.msgId) = 43;};// 查询计价规则
+
+  rpc  queryEstimateInfo (OpenPriceReq) returns (OpenPriceRes){option (krpc.msgId) = 1;};// 预估价格
+
+  rpc  createOrder (OpenCreateReq) returns (OpenCreateRes){option (krpc.msgId) = 2;};// 创建订单
+
+  rpc  cancelOrder (OpenCancelReq) returns (OpenCancelRes){option (krpc.msgId) = 3;};// 取消订单
+
+  rpc  queryDriverLocation (OpenLocationReq) returns (OpenLocationRes){option (krpc.msgId) = 4;};// 司机位置
+
+  rpc  queryOrderDetail (OpenDetailReq) returns (OpenDetailRes){option (krpc.msgId) = 5;};// 订单详情
+
+  rpc  queryBillingDetails (OpenBillReq) returns (OpenBillRes){option (krpc.msgId) = 6;};// 账单详情
+
+  rpc  applyInvoice (OpenApplyInvoiceReq) returns (OpenApplyInvoiceRes){option (krpc.msgId) = 7;};// 申请发票
+
+  rpc  queryInvoice (OpenQueryInvoiceReq) returns (OpenQueryInvoiceRes){option (krpc.msgId) = 8;};// 查询发票
+
+  rpc  resendInvoice (OpenResendInvoiceReq) returns (OpenResendInvoiceRes){option (krpc.msgId) = 9;};// 重发电子发票
+
+  rpc  payStatus (OpenPayStatusReq) returns (OpenPayStatusRes){option (krpc.msgId) = 10;};// 同步支付状态
+
+  rpc  complaint (OpenComplaintReq) returns (OpenComplaintRes){option (krpc.msgId) = 11;};// 投诉司机
+
+  rpc  orderEventNotifyByMerchant (OrderEventNotifyReq) returns (OrderEventNotifyRes){option (krpc.msgId) = 12;};// 渠道订单事件通知
+
+  rpc  evaluateDriver(OpenEvaluateDriverReq) returns (OpenEvaluateDriverRes){option(krpc.msgId) = 22;} // 评价司机
+
+  rpc queryOrderList(OpenQueryOrderListReq) returns  (OpenQueryOrderListRes) {option(krpc.msgId) = 23;}//订单列表
+
+  rpc  queryNearByDriver(QueryNearByDriverReq) returns (QueryNearByDriverRes){option(krpc.msgId) = 31;} // 查询附近司机
+
+  rpc cancelInvoice(InvalidInvoiceReq) returns (InvalidInvoiceRes){option (krpc.msgId) = 32;}; //发票作废
+
+  rpc queryInvoiceAmount(QueryInvoicedAmountReq) returns (QueryInvoicedAmountRes){option (krpc.msgId) = 33;};//查询可开票金额
+
+  rpc  queryCancelRule(OpenQueryCancelRuleReq) returns (OpenQueryCancelRuleRes){option (krpc.msgId) = 34;};// 查询取消规则
+
+  rpc  createOrderV2 (OpenCreateV2Req) returns (OpenCreateV2Res){option (krpc.msgId) = 40;};// 创建订单v2
+
+  rpc  queryEstimateInfoV2 (OpenPriceV2Req) returns (OpenPriceV2Res){option (krpc.msgId) = 41;};// 预估价格v2
+
+  rpc  modifyDestination (ModifyDestinationReq) returns (ModifyDestinationRes){option (krpc.msgId) = 42;};// 更改目的地
+
+  rpc  queryCities(OpenQueryCitiesReq) returns (OpenQueryCitiesRes) {option(krpc.msgId) = 28;}  //获取城市列表
+
+  rpc  queryCityCode(OpenQueryCityCodeReq) returns (OpenQueryCityCodeRes){option (krpc.msgId) = 29;};// 查询城市编码
+
+  rpc queryVirtualPhoneNo(OpenQueryVirtualPhoneNoReq) returns (OpenQueryVirtualPhoneNoRes) {option(krpc.msgId) = 26;}  //获取虚拟手机号
+
+  rpc  queryTracesByOrderNo (QueryTracesByOrderNoReq) returns (QueryTracesByOrderNoRes){option (krpc.msgId) = 44;};// 查询实际送乘客轨迹
+
+  rpc condemnNotifyBySaic(CondemnNotifyBySaicReq) returns (CondemnNotifyBySaicRes){option(krpc.msgId) = 45;} // 申程接收享道自动判责 客诉判责通知
+
+  rpc bindDriverVirtualMobile(BindDriverVirtualReq) returns (BindDriverVirtualRes) {option(krpc.msgId) = 46;} // 第三方客服绑定司机 获取虚拟号  美团会使用
+
+  rpc  queryCancelRuleV2(OpenQueryCancelRuleV2Req) returns (OpenQueryCancelRuleV2Res){option (krpc.msgId) = 35;};// 查询取消规则v2
+
+  rpc setCancelReasonByPassenger (SetCancelReasonByPassengerReq) returns (SetCancelReasonByPassengerRes) {option (krpc.msgId) = 39;}; //乘客设置取消原因
+
+  rpc batchAddEntUser (BatchAddEntUserReq) returns (BatchAddEntUserRes) {option (krpc.msgId) = 47;}; //批量新增企业用户
+
+  rpc batchDelEntUser (BatchDelEntUserReq) returns (BatchDelEntUserRes) {option (krpc.msgId) = 48;}; //批量删除企业用户
+
+  rpc queryEntUserList (QueryEntUserListReq) returns (QueryEntUserListRes) {option (krpc.msgId) = 49;}; //查询企业用户
+
+  rpc syncRefund (SyncRefundReq) returns (SyncRefundRes) {option (krpc.msgId) = 50;};//商户同步退款结果
+
+  rpc setDestInfo (SetDestInfoReq) returns (SetDestInfoRes) {option (krpc.msgId) = 51;};//设置目的地
+
+  rpc openBatchDetail (OpenBatchDetailReq) returns (OpenBatchDetailRes) {option (krpc.msgId) = 52;};//批量查询详情接口
+
+  rpc syncPayNotify (SyncPayNotifyReq) returns (SyncPayNotifyRes) {option (krpc.msgId) = 53;};//同步支付状态
+
+  rpc queryOrderForCS (QueryOrderForCSReq) returns (QueryOrderForCSRes) {option (krpc.msgId) = 54;};//查询售后司机或乘客手机号
+
+  rpc createEnterprise (CreateEnterpriseReq) returns (CreateEnterpriseRes) {option (krpc.msgId) = 55;};//创建企业
+
+  rpc shieldingDriver (ShieldingDriverReq) returns (ShieldingDriverRes) {option (krpc.msgId) = 56;};//拉黑司机
+
+  rpc rmShieldingDriver (RmShieldingDriverReq) returns (RmShieldingDriverRes) {option (krpc.msgId) = 57;};//解除拉黑司机
+
+  rpc createEntApplication (CreateEntApplicationReq) returns (CreateEntApplicationRes) {option (krpc.msgId) = 58;};//企业用车申请
+
+  rpc queryOrderListV2 (QueryOrderListV2Req) returns (QueryOrderListV2Res) {option (krpc.msgId) = 59;};//批量查询订单
+
+  rpc queryRealTimePriceV2 (QueryRealTimePriceV2Req) returns (QueryRealTimePriceV2Res) {option (krpc.msgId) = 60;};//实时计价
+
+  rpc queryPriceRuleGaoDe (QueryPriceRuleGaoDeReq) returns (QueryPriceRuleGaoDeRes) {option (krpc.msgId) = 61;};//高德查询计价规则
+
+  rpc syncThirdCompensate (SendThirdCompensateReq) returns (SendThirdCompensateRes) {option (krpc.msgId) = 62;};//三方补偿同步
+
+  rpc  createOrderStd (OpenCreateStdReq) returns (OpenCreateStdRes){option (krpc.msgId) = 63;};// 创建订单-标准
+
+  rpc  modifyContact (ModifyContactReq) returns (ModifyContactRes){option (krpc.msgId) = 64;};// 乘客修改联系方式，携程接机单用
+
+  rpc  queryOrderStatus (QueryOrderStatusReq) returns (QueryOrderStatusRes){option (krpc.msgId) = 65;};// 获取订单状态
+
+  // ======================      以下接口暂时不用
+  rpc cancelOderIsDuty(OpenCancelOderIsDutyReq) returns (OpenCancelOderIsDutyRes) {option(krpc.msgId) = 20;}  //取消订单判断有责 废弃，@deprecated=true
+
+  rpc confirmExtraFee(OpenConfirmExtraFeeReq) returns  (OpenConfirmExtraFeeRes)  {option(krpc.msgId) = 21;}// 确认附加费 废弃，@deprecated=true
+
+  rpc continueOrder(OpenContinueReq) returns (OpenContinueRes) {option(krpc.msgId) = 24;} // 继续叫车 废弃，@deprecated=true
+
+  rpc queryNearCar(OpenQueryNearCarReq) returns (OpenQueryNearCarRes) {option(krpc.msgId) = 25;}//查询附近车辆 废弃，@deprecated=true
+
+  rpc queryRealTimePrice(OpenQueryRealTimePriceReq) returns (OpenQueryRealTimePriceRes){option(krpc.msgId) = 27;} // 实时计价 废弃，@deprecated=true
+  // ======================================================  以上接口暂时不用
+
+}
+
+message QueryOrderStatusReq {
+  string merchantId = 1;// 商户id
+  string appId = 2;// 应用id
+  string merTraceId = 3;// 渠道侧tid
+  string passengerId = 4;// 乘客uid
+
+  string oid = 10;// 外部订单号
+  string order_id = 11;// 享道订单号
+}
+
+message QueryOrderStatusRes {
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  OpenOrderStatusContent content = 3;
+  int32 extCode = 4;
+  string extMsg = 5;
+}
+
+message OpenOrderStatusContent{
+  string status = 1;//订单状态
+}
+
+message ModifyContactReq {
+  string merchantId = 1;// 商户id
+  string appId = 2;// 应用id
+  string merTraceId = 3;// 渠道侧tid
+  string passengerId = 4;// 乘客uid
+
+  string oid = 11;// 渠道订单号
+  string order_id = 12;// 享道订单号
+
+  string actual_phone = 13;// 真实手机号
+  string virtual_phone = 14;// 虚拟号
+  string mask_phone = 15;// 掩码手机号，如:132****2222
+
+  int32 target = 16;// 更新目标 0-叫车人 1-乘车人
+}
+
+message ModifyContactRes {
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  ModifyContactContent content = 3;
+  int32 extCode = 4;
+  string extMsg = 5;
+}
+
+message ModifyContactContent {
+  string driver_phone = 1;// 修改后的绑定虚拟号
+}
+
+message OpenCreateStdReq {
+  string merchantId = 1;// 商户id
+  string appId = 2;// 应用id
+  int32 isEnterprise = 3;// 0.无 1.企业版
+  int64 enterpriseId = 4; // 企业id
+  string enterpriseDiscount = 5; // 企业折扣
+  string costCenterId = 6;// 成本中心ID
+  string productId = 7; // 产线
+  string merTraceId = 8;// 渠道侧tid
+  string loginType = 9;// 登录类型
+  string payId = 10;// 企业支付方式
+
+  int64   timestamp = 21;// 请求时间，Unix Timestamp单位毫秒
+  string  oid = 22;// 合作方订单号
+  double  slon = 23;// 出发地经度，接机单非必传
+  double  slat = 24;// 出发地纬度，接机单非必传
+  string  sname = 25;// 出发地名称，接机单非必传
+  string  saddress = 26;// 出发地详细地址
+
+  double  dlon = 27;// 目的地经度
+  double  dlat = 28;// 目的地纬度
+  string  dname = 29;// 目的地名称
+  string  daddress = 30;// 目的地详细地址
+
+  string  flight_no = 31;// 航班号，接机单必传
+  string  flight_date = 32;// 航班起飞日期，格式yyyy-MM-dd，接机单必传
+  int32   delay_time = 33;// 落地后多长时间用车，单位（S），接机单必传
+  string  aircode = 34;// 到达机场三字码，接机单必传
+  int64   departure_time = 35;// 出发时间，Unix timestamp，单位秒（S），默认为当前时，接机单为非必传，预约单、送机单为必传
+
+  int32   service_id = 36;// 服务类型
+  string  estimate_id = 37;// 预估价格ID
+  string  product_type = 38;// 产品类型
+  string  ride_type = 39;// 运力类型
+  string  city_code = 40;// 出发城市区号
+  int32 max_eta = 41;//最大接驾导航时长(单位：秒)
+  int32 max_eda = 42;//最大接驾导航距离(单位：米)
+
+  string user_open_id = 43;//合作方用户id，用户唯一标示
+
+  string user_name = 44;//下单人姓名（50字符以内），默认为空字符串
+  string user_phone = 45;//叫车人真实手机号
+  string user_virtual_phone = 46;// 叫车人虚拟号
+  string user_mask_phone = 47;// 叫车人掩码手机号，如:132****2222
+
+  string passenger_name = 48;// 乘客姓名（50字符以内），默认为空字符串
+  string passenger_phone = 49;// 乘客真实手机号
+  string passenger_mask_phone = 50;// 乘客掩码手机号，如:132****2222
+  string passenger_virtual_phone = 51;// 乘客虚拟号码
+
+  repeated OpenMultiCall multiCall = 52;// 同时呼叫
+
+  string extra = 53;// json格式拓展信息，目前包含newProcess:true-哈啰新版本订单
+  string ext_oid = 54; //外部订单号2，携程用户主单号，仅携程用，对应需方下单extOrderNo2
+}
+
+message OpenCreateStdRes {
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  CreateContent  content = 3;
+  int32 extCode = 4;
+  string extMsg = 5;
+}
+
+message SendThirdCompensateReq {
+  string appId = 1;
+  string merchantId = 2;
+  int64  timestamp = 3;  //请求时间，Unix Timestamp单位毫秒
+  string passengerId = 4;// 乘客uid
+
+  string order_id = 10;// 订单号
+  string oid = 11;// 渠道订单号
+  string ext_oid = 12;// 渠道侧额外订单号
+  int32  type = 13;// 补偿类型；1-爽约赔付
+  string reason = 14;// 补偿原因说明
+  int32 amount = 15;// 补偿金额
+  string extra = 16;// 拓展信息，json格式字符串，非必传
+}
+
+message SendThirdCompensateRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  int32 extCode = 3;//对应高德服务响应状态，
+  string extMsg = 4;//对应高德服务响应状态说明
+}
+
+message QueryPriceRuleGaoDeReq {
+  string merchantId = 1;
+  string appId = 2;
+
+  string estimateId = 3;
+  string channel = 4;
+  int64  timestamp = 5;  //请求时间，Unix Timestamp单位毫秒
+}
+
+message QueryPriceRuleGaoDeRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  PriceRuleGaoDeContent content = 3;
+
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message PriceRuleGaoDeContent {
+  string adcode = 1;//城市code
+  repeated PriceRuleGaoDeConfig configList = 2;//具体配置集合
+}
+
+message PriceRuleGaoDeConfig {
+  int32 dateType = 1;//日期类型，0：工作日 1：休息日
+  int32 realTimeType = 2;//类型，200：实时单 201：预约单
+  repeated PriceRuleGaoDeConfigDetail config = 3;//具体配置
+}
+
+message PriceRuleGaoDeConfigDetail {
+  string key = 1;//费用项配置key
+  string name = 2;//费用项配置描述
+  string text = 3;
+  repeated PriceRuleGaoDeConfigItem subList = 4;//费用子项集合
+}
+
+message PriceRuleGaoDeConfigItem {
+  string name = 1;
+  string value = 2;
+}
+
+message QueryRealTimePriceV2Req {
+  string merchantId = 1;
+  string appId = 2;
+
+  string passengerId = 3;
+
+  string order_id = 4;// 享道订单号
+  string oid = 5;// 外部订单号
+}
+
+message QueryRealTimePriceV2Res {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  RealTimePriceV2Content content = 3;
+
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message RealTimePriceV2Content {
+  int32 distance = 1;// 实时里程
+  int32 duration = 2;// 实时时长
+  int32 fee = 3;// 实时费用
+}
+
+message QueryOrderListV2Req {
+  string merchantId = 1;
+  string appId = 2;
+
+  string apply_no = 3;// 申请单号，每刻用
+  string ent_id = 4;// 企业id，每刻用
+  string user_code = 5;// 下单员工唯一标识，每刻用
+  string order_id = 6;// 订单号
+  string operationId = 7;// 操作号
+  string start_date = 8;// 开始时间
+  string end_date = 9;// 结束时间
+  string date_type = 10;// 日期类型
+  string page_no = 11;// 页码
+  string page_size = 12;// 数量
+}
+
+message QueryOrderListV2Res {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  QueryOrderListV2Content content = 3;
+
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message QueryOrderListV2Content {
+  repeated DetailContent orders = 1;
+}
+
+message CreateEntApplicationReq {
+  string appId = 1;
+  string merchantId = 2;
+  int32 productId = 3;//产品线
+
+  string apply_no = 4;// 申请单号
+  string ent_id = 5;// 企业id
+  string user_code = 6;// 下单员工唯一标识
+  repeated EntApplicationUser passengers = 7;// 用车人列表
+  repeated EntApplicationDept dept = 8; //部门 若未传，则员工从属部门为该【企业】
+  repeated EntApplicationCity departureCities = 9; //出发城市列表
+  repeated EntApplicationCity arrivalCities = 10; //目的城市列表
+  string start_date = 11; //预订开始用车时间(yyyy-MM-dd) 必传
+  string end_date = 12; //预订结束用车时间(yyyy-MM-dd) 必传
+  double application_total_amount = 13; //申请单总额 若不传，则不限制该订单限额
+  string rule_code = 14; //用车规则ID 必传
+  string purpose = 15;//出差事由
+  bool allow_cross_city = 16; // 是否允许跨城
+  bool allow_flight_pickUp = 17; //是否允许接送机
+  double per_order_amount = 18; //每单限额 非必填
+  int32 per_order_amount_ctrl_lv = 19; //每单限额管控级别   0=不管控 1=管控  该字段为1时  每单限额才生效
+  repeated string carTypes = 20; //可预定车型列表
+  int32 car_type_ctrl_lv = 21; //车型管控级别  0=不管控 1=管控 该字段为1时 carTypes才生效
+}
+
+message EntApplicationDept {
+  string code = 1; //部门唯一标识
+  string name = 2; //部门名称
+}
+
+message EntApplicationCity {
+  string code = 1; //城市编码
+  string name = 2; //城市名称
+  string ad_code = 3; //行政区划编码
+}
+
+message EntApplicationUser {
+  string code = 1; //员工id
+  string name = 2; //员工姓名
+  string phone = 3; //手机号
+}
+
+message CreateEntApplicationRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  CreateEntApplicationContent content = 5; //关联申请单
+}
+
+message CreateEntApplicationContent {
+  string approvalNo = 1; //每刻的申请单号
+  string externalApprovalNo = 2; //第三方系统中申请单的唯一标识
+}
+
+message ShieldingDriverReq {
+  string appId = 1;
+  string merchantId = 2;
+  int32 productId = 3;//产品线
+  string passengerId = 4;//乘客id，服务自动填充
+
+  string order_id = 5;//订单号
+  string driver_id = 6;//司机id
+  string pass_id = 7;//乘客id，外部商户传递
+}
+
+message ShieldingDriverRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+}
+
+message RmShieldingDriverReq {
+  string appId = 1;
+  string merchantId = 2;
+  int32 productId = 3;//产品线
+  string passengerId = 4;//乘客id，服务自动填充
+
+  string order_id = 5;//订单号
+  string driver_id = 6;//司机id
+  string pass_id = 7;//乘客id，外部商户传递
+}
+
+message RmShieldingDriverRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+}
+
+message CreateEnterpriseReq {
+  string appId = 1;
+  string merchantId = 2;
+  int32 productId = 3;//产品线
+
+  string outer_ent_id = 4;//外部企业id
+  string ent_name = 5;//企业名称
+  string contact_name = 6;//企业联系人
+  string contact_tel = 7;//企业联系电话
+}
+
+message CreateEnterpriseRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  CreateEntContent content = 3;//详情
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message CreateEntContent {
+  string outer_ent_id = 1;//外部企业id
+  string ent_id = 2;//享道企业id
+  string status = 3;//1-新建 2-审批失败 3-审批通过
+}
+
+message QueryOrderForCSReq {
+  string appId = 1;
+  string merchantId = 2;
+
+  int32 productId = 3;//产品线
+  string orderNo = 4; //订单号 必传
+  string extOrderNo = 5; //上游渠道订单号 非必传用于数据验证
+  string supplyOrderNo = 6; //下游运力单号 非必传用于数据验证
+  int32 queryScene = 7;//查询场景：1-上游查下游、2-下游查上游
+}
+
+message QueryOrderForCSRes {
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  //--------1-上游查下游--------
+  string driverMobile = 3; //司机手机号
+  //--------2-下游查上游--------
+  string passengerMobile = 4; //乘客手机号
+  int32 isBehalf = 5; //0：个人打车单 1代叫单
+  string actualPassengerMobile = 6; //实际乘车人手机号 仅代叫单出现
+}
+
+message  OpenPriceReq{
+  string  channel = 1;  //分配的密钥、token等明文名称
+  int64  timestamp = 2;  //请求时间，Unix Timestamp单位毫秒
+  double  slon = 3;  //出发地经度，接机单非必传
+  double  slat = 4;  //出发地纬度，接机单非必传
+  string  sname = 5;  //出发地名称，接机单非必传
+  double  dlon = 6;  //	目的地经度
+  double  dlat = 7;  //目的地纬度
+  string  dname = 8;  //	目的地名称
+  string  flight_no = 9;  //	航班号，接机单必传
+  string  flight_date = 10;  //	航班起飞日期，格式yyyy-MM-dd，接机单必传
+  int32  delay_time = 11;  //	落地后多长时间用车，单位（S），接机单必传
+  string  aircode = 12;  //	到达机场三字码，接机单必传
+  int32  service_id = 13;  //	服务类型
+  string  product_type = 14;  //	产品类型，默认返回所有商定运力 产品线
+  string  ride_type = 15;  //	运力类型，默认指定车型下所有商定运力
+  string  city_code = 16;  //	城市code，默认为出发地所在城市code
+  string  d_city_code = 23;  //	目的地城市code 包车单必传
+  int64  departure_time = 17;  //	出发时间，Unix timestamp，单位秒（S），默认为当前时间，接机单为非必传，预约单、送机单为必传
+  int32 carUseDuration = 18; // 用车时长，0、非包车，4、半天，8、一天，16、两天，....，n*8、n天
+
+  //修改目的地时必传
+  string order_id = 19;//cp订单号，修改目的地时必须传
+  int32  estimate_type = 20;//默认不传，estimate_type=1 表示修改目的地获取预估价
+  double current_lon = 21;//乘客当前位置经度 修改目的地必传
+  double current_lat = 22;//乘客当前位置纬度 修改目的地必传
+  string extra = 24;// json格式拓展信息，目前包含newProcess:true-哈啰新版本订单；
+
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  int64 enterpriseId = 102; // 企业id
+  string enterpriseDiscount = 103; //企业折扣
+  int32 isEnterprise = 104;// 0.无 1.企业版  用于区分计算折扣
+  string productId = 106; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  int32 isDiscount = 107;// 是否存在折扣 0 否 1 是 默认 0 不需要计算折扣
+  string samplingResult = 108; //额外信息
+}
+message  OpenPriceRes{
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  PriceContent content = 3;//详情
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  PriceContent{
+  int32 distance = 1;//预估距离，单位米（m），不足1m，返回1
+  int32 estimate_time = 2;//预估时间，单位秒（S），不足60秒，返回60
+  repeated PriceInfo prices = 3;//运力预估价格信息列表
+  string extra = 4;// json格式拓展信息，目前包含newProcess:true-哈啰新版本订单；
+}
+message  PriceInfo{
+  string  product_type = 1;//	产品类型
+  string  ride_type = 2;//	运力类型
+  string  estimate_id = 3;//	预估标识，创建订单时使用，有效期10分钟
+  double  dynamic_rate = 4;//	动态调价倍率，现价与原价的比值
+  int32  estimate_price = 5;//	预估价格，包含动态调价部分，单位分
+  repeated EstimatePriceDetail detail = 6;//预估价格明细
+  int32 long_distance = 7; //预估远途里程
+  string discount_rate = 8;// 折扣率
+  int32 discountMoney = 9;//优惠金额
+  double tmpAddMultiple = 10;//临时加价倍数
+  int32 tmpAddMoney = 11;//临时加价金额
+  int32 originPrice = 12;//预估价格打折前原价 单位分
+  BidAct bidAct = 13;//高德动态调价,非必填
+  int32 original_price = 14;//预估价格打折前原价 单位分
+}
+message EstimatePriceDetail{
+  string description = 1;// 明细名称
+  int32 amount = 2;//明细金额
+  string type = 3;//明细类型
+  int32 origin_amount = 4;//原价
+
+  string name = 5;// 明细名称-高德专用
+  string value = 6;//明细金额（单位元，保留两位小数）-高德专用
+  string key = 7;//明细类型-高德专用
+
+}
+
+message BidAct{
+  int32 diamondStep = 1;//钻石价差（单位分）
+  int32 bidFailDiscount = 2;//失败是否给与让利 1：是；0：否
+  int32 expectOrder = 3;//期待排名
+  int64 discountAmount = 4;//最大折扣金额（单位分）
+  int64 discountThreshold = 5;//折扣门槛（单位分）
+  string discount = 6;//折扣 例如7折：就传0.7  --四舍五入保留两位小数
+}
+
+message  OpenPriceV2Req{
+  string  channel = 1;  //分配的密钥、token等明文名称
+  int64  timestamp = 2;  //请求时间，Unix Timestamp单位毫秒
+  double  slon = 3;  //出发地经度，接机单非必传
+  double  slat = 4;  //出发地纬度，接机单非必传
+  string  sname = 5;  //出发地名称，接机单非必传
+  double  dlon = 6;  //	目的地经度
+  double  dlat = 7;  //目的地纬度
+  string  dname = 8;  //	目的地名称
+  string  flight_no = 9;  //	航班号，接机单必传
+  string  flight_date = 10;  //	航班起飞日期，格式yyyy-MM-dd，接机单必传
+  int32  delay_time = 11;  //	落地后多长时间用车，单位（S），接机单必传
+  string  aircode = 12;  //	到达机场三字码，接机单必传
+  int32  service_id = 13;  //	服务类型
+  string  product_type = 14;  //	产品类型，默认返回所有商定运力 产品线
+  string  ride_type = 15;  //	运力类型，默认指定车型下所有商定运力
+  string  city_code = 16;  //	城市code，默认为出发地所在城市code
+  int64  departure_time = 17;  //	出发时间，Unix timestamp，单位秒（S），默认为当前时间，接机单为非必传，预约单、送机单为必传
+  int32 carUseDuration = 18; // 用车时长，0、非包车，4、半天，8、一天，16、两天，....，n*8、n天
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  int64 enterpriseId = 102; // 企业id
+  string enterpriseDiscount = 103; //企业折扣
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenPriceV2Res{
+  int32 retCode = 1;//	服务响应状态，
+  string retMsg = 2;//服务响应状态说明
+  PriceContent content = 3;//详情
+}
+
+message  OpenCreateReq{
+  string  channel = 1;// 分配的密钥、token等明文名称
+  int64    timestamp = 2;// 请求时间，Unix Timestamp单位毫秒
+  string  oid = 3;// 高德易行订单ID，防止重复发单
+  double  slon = 4;// 出发地经度，接机单非必传
+  double  slat = 5;// 出发地纬度，接机单非必传
+  string  sname = 6;// 出发地名称，接机单非必传
+  string  saddress = 7;// 出发地详细地址
+  double  dlon = 8;// 目的地经度
+  double  dlat = 9;// 目的地纬度
+  string  dname = 10;// 目的地名称
+  string  daddress = 11;// 目的地详细地址
+  string  flight_no = 12;// 航班号，接机单必传
+  string  flight_date = 13;// 航班起飞日期，格式yyyy-MM-dd，接机单必传
+  int32    delay_time = 14;// 落地后多长时间用车，单位（S），接机单必传
+  string  aircode = 15;// 到达机场三字码，接机单必传
+  int32    service_id = 16;// 服务类型
+  string  estimate_id = 17;// 预估价格ID，参见预估价格接口
+  string  passenger_moblie = 18;// 乘客手机号，中间四位加密（高德），用于司机确认乘客身份
+  string  passenger_virtual_phone = 19;// 乘客虚拟号码，用于下发给司机联系乘客，如果该字段不存在或为空，则下发passenger_moblie字段给司机
+  string  passenger_name = 20;// 乘客姓名（50字符以内），默认为空字符串
+  string  passenger_country_code = 21;// 乘客手机号国家代码，默认为+86
+  string  product_type = 22;// 产品类型
+  string  ride_type = 23;// 运力类型
+  string  city_code = 24;// 城市code，默认为出发地所在城市city_code
+  string  d_city_code = 45;  //	目的地城市code 包车单必传
+  int64   departure_time = 25;// 出发时间，Unix timestamp，单位秒（S），默认为当前时，接机单为非必传，预约单、送机单为必传
+  string  driver_message = 26;// 给司机留言的内容，留言内容通过base64编码以后不超过92字符（约69字短信）
+  string passenger_open_id = 27;//高德用户唯一标识，不低于21位
+
+  string user_open_id = 28;//合作方用户id，用户唯一标示
+  string user_mobile = 29;//下单人手机号
+  string user_name = 30;//下单人姓名（50字符以内），默认为空字符串
+  string user_country_code = 31;//下单人手机号国家代码，默认+8
+  string passenger_mobile = 32;// 乘客手机号，非高德
+
+  string passenger_phone_mark = 33; //乘客手机号标记，滴滴传入手机号后4位
+  string enterpriseDiscount = 35; //企业折扣
+  string costCenterId = 36;//成本中心ID
+  string costCenterName = 37;//成本中心名称
+  int32 type = 38;//  滴滴精准派单 订单类型二进制位， 取值为0，代表普通订单 第0位为1表示下听单 第1位为1表示精准派单  从后往前取
+  string ext_driver_id = 39;//滴滴精准派单 预派单司机 type = 1 有效
+
+  string dispatch_info = 40;//出租车调度信息，json数组格式字符串dispatch_type：调度类型，int类型，1-调度费 2-打表来接 3-信息费 dispatch_amount：运力调度费，int类型，单位分
+  repeated OpenMultiCall multiCall = 41;// 同时呼叫
+  int32 isHighValuePassengers = 42;//是否高价值订单，高德用，当且仅当值为1时，此订单为高价值订单
+  int32 max_eta = 43;//最大接驾导航时长(单位：秒)
+  int32 max_eda = 44;//最大接驾导航距离(单位：米)
+  string extra = 46;// json格式拓展信息，目前包含newProcess:true-哈啰新版本订单；
+
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+
+  int64 enterpriseId = 102; // 企业id
+  string payId = 103 ;//企业支付方式 网关透传
+  int32 isEnterprise = 104;// 0.无 1.企业版
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  string productId = 106; //产线
+  int32 carUseDuration = 107;//用车时长，4-半天、8-全天、16-两天、24-三天…包车必传
+  string remark = 108;//用车备注
+  string company_name = 109;//下单人公司名称
+  string enterpriseDeptName = 114;//企业部门名称
+
+  int32 dis_dynamic_price = 110;//高德优惠投放：动调金额，单位分 非必填
+  int32 dis_bidding_price = 111;//高德优惠投放：竞价金额，单位分 非必填
+  bool dis_bidding_result = 112;//高德优惠投放：竞价结果，true：成功 false：失败  非必填
+  string dis_ext = 113;//高德优惠投放：扩展字段，Json格式  非必填
+  int32 loginType = 115;//登录类型
+  int32 carUseScene = 116;//用车场景 1-加班、2-外勤、3-差旅、4-代叫、5-包车 8:一键叫车
+  int32 add_price = 117;//加价金额- 阿里欢行加价调度
+  int32 platformMessageFee = 118;//平台信息费
+
+  string lastOrderNo = 119; //上一单订单号 ORIDE-180563 透传参数
+  int32 isChangeDriver = 120; //是否换个司机  1=是  0=否 ORIDE-180563 透传参数
+
+  string ext_oid = 121; //外部订单号2，携程用户主单号，仅携程用，对应需方下单extOrderNo2
+  string user_virtual_phone = 122;// 叫车人虚拟号
+  string passengerAppCapacity = 123;//司乘同显，透传字段
+}
+
+message OpenMultiCall {
+  string ride_type = 1;
+  string estimate_id = 2;
+}
+
+message  OpenCreateRes{
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  CreateContent  content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+
+  string eventCode = 6; // 事件编码，只在成功时返回新建订单的事件编码
+  string createTime = 7; //创建时间
+  string conflictOrderNo = 8; // 冲突的订单号 可能是预约单，也可能是实时单
+  string conflictEventCode = 9; // 冲突的订单号的事件编码
+  int32 sceneCode = 10; // 下单失败时的 场景编码 1=已存在预约单 2=黑名单用户 3=取消次数太多 4=有未支付订单 5=有行程中订单
+  int32 payAdvanceFlag = 11; //是否需要预付校验，0否，1是
+
+  string conflictOrderNoRemark = 12; //描述
+  string sceneCodeRemark = 13; //描述
+  string conflictEventCodeRemark = 14; //描述
+  int64 entPayable = 15; //   企业可支付金额
+  int64 empPayable = 16; //  员工支付金额
+  int32 entComboPay = 17; //  企业组合支付 0=企业付 1=员工与企业共同付
+  string entComboPayMsg = 18; //  额度不足时文案
+}
+message  CreateContent{
+  string    oid = 1 ;//	合作方订单号
+  string    order_id = 2;//	内部订单号
+  int32    status = 3;//	行程状态
+}
+message  OpenCancelReq{
+  string   channel = 1;// 分配的密钥、token等明文名称
+  int64    timestamp = 2;// 请求时间，Unix Timestamp单位毫秒
+  string   order_id = 3;// 合作方订单ID
+  string   oid = 4;// 高德易行订单ID
+  string   force = 5;// 是否强制取消，默认true; true：强制取消订单，订单真正被取消 ;false：获取当前取消费，不会真正取消订单
+  int32    cancel_reason = 6;// 订单取消原因
+  string passengerId = 7;  //用户ID
+  int32 ct = 8; //1: 平台取消；2: 无应答超时取消；3: 用户取消     非必填
+  string cancel_fee_rate = 9;// 取消费比例 ,仅携程预约单用
+
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  int32 cancel_flag = 102;//1: 平台取消；2: 无应答超时取消；3: 用户取消   4.客服取消
+
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  string haluoCancelReason = 106; //haluo取消原因
+}
+message  OpenCancelRes{
+  int32   retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  CancelContent  content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+
+}
+message  CancelContent{
+  string   order_id = 1;//	合作方订单ID
+  string   oid = 2;//	高德易行订单ID
+  int32   is_canceled = 3;//	是否取消成功，0：失败，1：成功
+  bool   need_pay = 4;//	是否需要支付取消费
+  int32   cost = 5;//	需要支付的取消费金额，单位分，取消费金额需要同时体现在订单详情接口中
+
+  // 2020.02.18 滴滴开放平台
+  int32 status = 6;  //订单当前状态
+  string status_text = 7; //订单当前状态文本
+  int32 cancel_minute = 8; //免责取消时间 单位:分钟 向上取整
+}
+
+message  OpenLocationReq{
+  string channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  string order_id = 3;//	合作方订单ID
+  string oid = 4;//	接入方订单ID
+  string passengerId = 5;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenLocationRes{
+  int32 retCode = 1;//	服务响应状态，参见附录3
+  string retMsg = 2;//	服务响应状态说明，参见附录3
+  LocationContent content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+
+}
+
+message  LocationContent{
+  int32 status = 1;//	订单状态
+  double lon = 2;//	司机实时位置经度
+  double lat = 3;//	司机实时位置纬度
+  string oid = 4;//	接入方订单ID
+  string order_id = 5;//	合作方订单ID
+  double direction = 6;//司机车头方向角度（0为正北，顺时针旋转）
+  int64 uploadTimestamp = 7 ;//司机位置上报时间戳 毫秒
+}
+
+message  OpenBatchDetailReq{
+  string   channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  repeated string order_ids = 3;//	合作方订单ID集合
+  repeated string  oids = 4;//	高德易行订单ID集合;订单id集合
+  repeated string passengerId = 5;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  int32 isEnterprise = 104;// 0.无 1.企业版  用于区分计算折扣
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  int32 isDiscount = 107;// 是否存在折扣 0 否 1 是 默认 0 不需要计算折扣
+}
+
+message  OpenBatchDetailRes{
+  int32 retCode = 1;//	服务响应状态，参见附录3
+  string retMsg = 2;//	服务响应状态说明，参见附录3
+  repeated DetailContent content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message  OpenDetailReq{
+  string   channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  string  order_id = 3;//	合作方订单ID
+  string  oid = 4;//	高德易行订单ID
+  string passengerId = 5;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  int32 isEnterprise = 104;// 0.无 1.企业版  用于区分计算折扣
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  int32 isDiscount = 107;// 是否存在折扣 0 否 1 是 默认 0 不需要计算折扣
+}
+message  OpenDetailRes{
+  int32 retCode = 1;//	服务响应状态，参见附录3
+  string retMsg = 2;//	服务响应状态说明，参见附录3
+  DetailContent content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  DetailContent{
+  string oid = 1;//	高德易行订单ID
+  string order_id = 2;//	合作方订单ID
+  string product_type = 3;//	产品类型
+  int32  status = 4;//	订单当前状态，参见附录6
+  int32  pay_type = 5;//	1为线上，2为线下，默认为线上 106（行程结束待支付）状态及后续状态传递
+  string ride_type = 6;//	运力类型
+  DetailPassenger passenger = 7;//	乘客信息
+  DetailOrigin origin = 8;//	起点地址信息
+  DetailDestination destination = 9;//	终点地址信息
+  DetailDriver driver = 10;//	司机相关信息．如果未指定司机，则传空
+  DetailVehicle vehicle = 11;//	车辆信息，如果未指定车辆，则传空
+  DetailCost cost = 12;//	订单费用信息，最终费用确认前，传空
+  repeated TripPath trip_path = 13;//地图轨迹 送乘客轨迹
+  DriverOrbit driverOrbit = 14;//司机当前位置 平安对接 废弃 由网关自行组装
+  int32 orderType = 15; // 订单类型 实时单、预约单
+  string cityCode = 16; //城市编码
+  string appointmentTime = 17;//出发时间
+  string orderTime = 18;//下单时间
+  string dispatchTime = 19;//司机接单时间
+  string arriveBoardingPointTime = 20;//司机达到上车点时间
+  string pickUpTime = 21;//接到乘客时间
+  string arriveTime = 22;//到达目的地时间
+  string actualCarLevel = 23;//实际车级
+  string cancelReason = 24;//取消原因
+  int32 redispatchStatus = 25;//是否改派
+  string latestOrderId = 26;//改派后新外部订单号
+  string reassign_info02 = 27; // 外部订单号改派信息
+
+  string actualPassengerName = 28; //实际乘客姓名
+  string actualPassengerMobile = 29; //实际乘客手机号
+  repeated AddressPoint estPoint = 30;//途径点
+  int32 carUseType = 32; //用车方式：0-普通、1-接机、2-送机、3-包车
+  string enterpriseCostcenterName = 33; //企业成本中心
+  int32 carUseScene = 34; //用车场景：1-加班、2-外勤、3-差旅、4-代叫、5-包车
+  string enterpriseDeptName = 35; //企业部门名称
+  string enterpriseRuleName = 36; //企业规则名称
+  string enterpriseEmployeeName = 37;// 企业员工名称
+  string extOrderNo = 38; //外部订单号
+  string payDate = 39;// 支付时间
+  int32 payMode = 40; //支付方式：1-个人支付、2-企业支付
+  int32 operatorBy = 41;//操作方：0-未知，1-司机app，2-乘客app，10-客服MIS，20-风控，30-系统，40-企业后台，50-第三方,60-航班取消
+
+  int32 stopFee = 42; //停车费
+  int32 bridgeFee = 43; //路桥费
+  int32 otherFee = 44;//其他费
+  int32 actualPay = 45; // 乘客实际支付
+  int32 entServiceFee = 47; // 企业服务费
+  CancelDutyDetail cancelDutyDetail = 46;  //取消责任详情
+  string updateTime = 48; //更新时间
+  int32 estimatePrice = 49; //预估价格
+  string cancelTime = 50;//取消时间
+  int32 cancelFee = 56; // 取消费
+  int32 add_price = 57;//加价金额
+  string service_start_Time = 58;// 司机开始服务时间（预约单）
+  OpenRefundDetail refundDetail = 59;// 退款详情
+  int32 cancelFlag = 60; //取消标志
+  string cancelFlagText = 61; //取消标志描述
+
+  int32 enterpriseId = 62; //企业id，每刻用
+  string enterpriseEmployeeId = 63;//企业员工id，每刻用
+  string extra = 64;// json格式拓展信息，目前包含newProcess:true-哈啰新版本订单；
+  repeated GuestInfo guestInfoList = 65; //同行人列表
+  string apply_no = 66;// 企业申请单号
+  string bill_create_time = 67;// 发起账单时间，微信打车使用
+  int32 subStatus = 68;//订单详情子状态
+  int32 status4Open = 69;
+}
+
+message GuestInfo {
+  string guestName = 1; //同行人姓名
+  string guestMobile = 2; //同行人电话
+}
+
+message OpenRefundDetail {
+  int32 refundStatus = 1;//0=无退款 1=部分退款  2=全额退款
+
+  int64 payAmount = 2;//总支付金额
+  int64 userPayAmount = 3; //已支付个人支付金额
+  int64 entPayAmount = 4; //已支付企业支付金额
+
+  int64 refundAmount = 5;//退款总金额
+  int64 userRefundAmount = 6; //个人退款金额
+  int64 entRefundAmount = 7; //企业退款金额
+}
+
+message DriverOrbit{
+  double lon = 2;//	司机当前经度
+  double lat = 3;//	司机当前纬度
+}
+message  DetailPassenger{
+  string mobile = 1;//	乘客手机号（含国家编码）
+  string name = 2;//	乘客姓名
+}
+message  DetailOrigin{
+  string name = 1;//	预定起点地址名称
+  double lon = 2;//	预定起点地址经度
+  double lat = 3;//	预定起点地址纬度
+  string addressLong = 4;//预定起点长地址
+  string addressShort = 5;//预定起点短地址
+
+  double actualLon = 10;//	实际起点地址经度
+  double actualLat = 11;//	实际起点地址纬度
+  string actualAddressLong = 12;//实际起点长地址
+  string actualAddressShort = 13;//实际起点短地址
+  string cityCode = 14;//城市代码
+
+  double estLon = 6;//	预定起点地址经度   废弃
+  double estLat = 7;//	预定起点地址纬度   废弃
+  string estAddressLong = 8;//预定起点长地址   废弃
+  string estAddressShort = 9;//预定起点短地址    废弃
+}
+message  DetailDestination{
+  string name = 1;//	终点地址名称
+  double lon = 2;//	终点地址经度
+  double lat = 3;//	终点地址纬度
+  string addressLong = 4;//终点长地址
+  string addressShort = 5;//终点短地址
+
+  double actualLon = 10;//	实际起点地址经度
+  double actualLat = 11;//	实际起点地址纬度
+  string actualAddressLong = 12;//实际起点长地址
+  string actualAddressShort = 13;//实际起点短地址
+  string cityCode = 14;//城市代码
+
+  double estLon = 6;//	预定终点地址经度
+  double estLat = 7;//	预定终点地址纬度
+  string estAddressLong = 8;//预定终点长地址
+  string estAddressShort = 9;//预定终点短地址
+}
+message  AddressPoint{
+  double lon = 2;//	地址经度
+  double lat = 3;//	地址纬度
+  string addressLong = 4;//长地址
+  string addressShort = 5;//短地址
+
+  int32 viaStatus = 6; //途经点状态 0-失效 1-初始状态 2-已到达  约定返回给app不包含失效点 德邦H5
+  int32 optType = 7; //操作类型 0-无变化 1-add 2-update 3-delete  德邦H5
+}
+message  DetailDriver{
+  string mobile = 1;//	司机手机号码
+  double level = 2;//	司机星级（5分制），默认空
+  string id = 3;//	司机ID，司机身份唯一标识
+  string picture_url = 4;//	司机头像
+  string name = 5;//	司机姓名
+  string virtual_mobile = 6;//司机虚拟手机号
+  string virtual_mobile_for_passenger = 7;//代叫单场景 乘客手机号码和司机绑定的虚拟手机号
+  string enterprise_name = 8;//企业名称
+  string lat = 9;//司机接单时纬度
+  string lng = 10;//司机接单时经度
+  string sex = 11;//性别
+  string orderCnt = 12;//完单数
+}
+message  DetailVehicle{
+  string id = 1;// 车辆ID
+  string car_model = 2;// 车辆型号
+  string plate = 3;// 车牌号
+  string picture_url = 4;// 车辆图片，为空表示图片未收录
+  string car_color = 5;// 车辆颜色
+  int32 seatNum = 6;//最大载客数
+}
+message  DetailCost{
+  int32 amount = 1;// 总费用，单位分，实付
+  int32 distance = 2;// 行程里程，单位米（m）
+  int32 duration = 3;// 行程时长，单位秒（s）
+  repeated DetailCostDetail detail = 4;//  费用明细信息
+  string discount_rate = 5;// 折扣率
+  int32 discountMoney = 6;//优惠金额
+  double tmpAddMultiple = 7;//临时加价倍数
+  int32 tmpAddMoney = 8;//临时加价金额
+  int32 originPrice = 9;//折扣前价格，原价
+  int32 refundFee = 10; //退款
+}
+message  DetailCostDetail{
+  string  description = 1;// 明细名称，按照服务商现有描述即可
+  int32    amount = 2;// 明细金额
+  string  type = 3;// 明细类型，按照服务商现有类型即可
+  string subject = 4;//科目
+  string discountAmount = 5;//折扣金额
+  int32 origin_amount = 6;//原价单位分
+}
+message  TripPath{
+  double lon = 2;//	轨迹点经度
+  double lat = 3;//	轨迹点纬度
+}
+
+message  OpenBillReq{
+  string channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  string order_id = 3;//	合作方订单ID
+  string oid = 4;//	高德易行订单ID
+  string passengerId = 5;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenBillRes{
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  BillContent  content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  BillContent{
+  string   oid = 1;//	高德易行订单ID
+  string   order_id = 2;//	合作方订单ID
+  int64   create_time = 3;//	订单创建时间，Unix timestampt 单位秒（s）
+  int32  order_completed = 4;//	订单最终费用是否已完成确认 0:未完成，1:完成 如值为1，则amount和detail字段信息需要传递 如值为0，则amount和detail字段信息不需要传递
+  int32  amount = 5;//	费用总额，单位分
+  repeated BillContentDetail detail = 6;//	费用明细信息
+  int32 distance = 7;//行程里程，单位米（m）
+  int32 duration = 8;//行程时长，单位秒（s）
+  int32 long_distance = 9; //预估远途里程
+  string discount_rate = 10;// 折扣率
+  int32 discountMoney = 11;//优惠金额
+  double tmpAddMultiple = 12;//临时加价倍数
+  int32 tmpAddMoney = 13;//临时加价金额
+  string bill_create_time = 14;// 账单发起时间
+  string pay_time = 15;// 支付时间
+  string pay_channel = 16;// 支付渠道
+  int32 origin_amount = 17;//原价，目前哈啰用过
+}
+message  BillContentDetail{
+  string  description = 1;//	明细名称
+  string  type = 2;//	费用类型
+  int32  amount = 3;//	明细金额，单位分
+  int32 origin_amount = 4;//原价，单位分
+}
+
+message  OpenApplyInvoiceReq{
+  string channel = 1;// 分配的密钥、token等明文名称
+  int64  timestamp = 2;// 请求时间，Unix Timestamp单位毫秒
+  string title = 3;// 发票抬头（最多50个中文字符）
+  int32  buyer_type = 4;// 开票类型，1：个人，2：单位
+  string tax_number = 5;// 税号（单位发票必填，个人发票不填；15、18、20位大写字母或者数字）
+  string receive_name = 6;// 收件人姓名（最多10个中文字符）
+  string receive_mobile = 7;// 收件人手机号（最多13个字符）
+  string receive_email = 8;// 收件人邮箱
+  string receive_orders = 9;// 合作方订单号列表，订单间使用英文逗号（ASCII值0x2C）分割
+  string post_province = 10;// 收件人所在省（纸质发票必填）
+  string post_city = 11;// 收件人所在市（纸质发票必填）
+  string post_district = 12;// 收件人所在区（纸质发票必填）
+  string post_region = 13;// 收件人地区（x省x市x区/县）（纸质发票必填）
+  string post_street = 14;// 收件人街道（纸质发票必填；最多50个中文字符）
+  int32  invoice_type = 15;// 发票类型，1：纸质，2：电子
+  string register_address = 16;// 注册地址（最多50个中文字符）
+  string register_phone = 17;// 注册手机号（最多13个字符）
+  string open_bank = 18;// 开户银行（最多60个中文字符）
+  string bank_account = 19;// 银行账户号码（最多30个字符）
+  string remark = 20;// 备注（最多50个中文字符）
+  int64 amount = 21; // 开票金额
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  int32 is_send_triplist = 102;//是否发送行程单 1:是 其他:否
+  string ext = 103;//调用上下文参数
+  string outInvoiceId = 104;//外部发票id
+  string productId = 105; //产线
+  int32 apply_type = 106;//1:金额，2：行程，默认为：2
+  int32 num_of_invoice = 107;//发票数量，按照金额开票时必选
+  int32 amount_per_invoice = 108;//每张发票金额，单位分，按照金额开票时必选
+  string clientTraceId = 109;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  string oids = 110;//外部订单号，订单间使用英文逗号（ASCII值0x2C）分割
+  int32 send_invoice_type = 111;//发送发票方式 1-回传发票由高德发送 空或者其他-服务商直接发送给用户
+}
+
+message  OpenApplyInvoiceRes{
+  int32   retCode = 1;//	服务响应状态
+  string  retMsg = 2;//	服务响应状态说明
+  ApplyInvoiceContent  content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  ApplyInvoiceContent{
+  repeated InvoiceInfo invoices = 1;//	发票信息
+}
+message  InvoiceInfo{
+  string  invoice_id = 1;//	发票ID
+  int32  amount = 2;//	发票总金额，单位分
+  repeated  string invoiced_orders = 3;//	有效发票的合作方订单列表
+  repeated  string business_pay_orders = 4;//	企业支付的合作方订单列表
+  repeated  string invalid_orders = 5;//	无效订单列表
+  repeated  string merchant_orders = 6;//	渠道开票成功订单号列表
+}
+
+message  OpenQueryInvoiceReq{
+  string  channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  string  invoice_id = 3;//	1.享道发票ID  2.平安查询时，此参数表示：平安开票申请ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string outInvoiceId = 102;//外部发票id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenQueryInvoiceRes{
+  int32  retCode = 1;//	服务响应状态，参见附录3
+  string  retMsg = 2;//	服务响应状态说明，参见附录3
+  QueryInvoiceContent  content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  QueryInvoiceContent{
+  string  invoice_id = 1;//	发票ID
+  string  receive_name = 2;//	收件人
+  string  receive_mobile = 3;//	收件人手机号
+  string  receive_address = 4;//	收件人地址（纸质发票必填）
+  string  receive_email = 5;//	收件人邮箱
+  int64  application_time = 6;//	申请时间，Unix timestampt 单位秒（S）
+  string  title = 7;//	发票抬头
+  string  tax_number = 8;//	税号（单位发票必填，个人发票不填）
+  string  content = 9;//	开票内容
+  int32 amount = 10;//	开票总金额，单位分
+  int32 status = 11;//	申请状态1: 待开票 2: 待发出 3: 已发出 4: 待支付 5: 关闭
+  string  express_num = 12;//	快递单号
+  string  express_name = 13;//	快递公司
+  int32 invoice_type = 14;//	发票类型，1纸质，2电子
+  string invoice_link = 15;//发票下载地址
+  string invoice_code = 16;//
+  string invoice_num = 17;//
+  string invoice_time = 18;//开具时间，Unix timestampt 单位秒（S）
+  string invoice_check = 19;//发票校验码
+  repeated InvoiceRelatedTrip tripInfo = 20;
+}
+
+message InvoiceRelatedTrip {
+  string order_id = 1;
+  string invoice_amount = 2;
+}
+
+message  OpenResendInvoiceReq{
+  string channel = 1;// 分配的密钥、token等明文名称
+  string invoice_id = 2;// 服务方发票id
+  string email = 3;// 邮箱地址
+  string phone = 4;// 手机号
+  int64 timestamp = 5;// 请求时间，Unix Timestamp单位毫秒
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  int32 is_send_triplist = 102;//是否发送行程单 1:是 其他:否
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenResendInvoiceRes{
+  int32 retCode = 1;//	服务响应状态
+  string retMsg = 2;//	服务响应状态说明
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message  OpenPayStatusReq{
+  string channel = 1;// 分配的密钥、token等明文名称
+  int64 timestamp = 2;// 请求时间，Unix Timestamp单位毫秒
+  string order_id = 3;// 合作方订单ID
+  string oid = 4;// 高德易行订单ID
+  int32 status = 5;// 支付状态，0表示失败，1表示成功
+  string activity_id = 6;//墨竹平台场景ID
+  int32 coupon_amount = 7;//优惠券金额，单位分
+  string passengerId = 8;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  int32 notify_type = 102;//通知类型，0 支付 1 退款 默认为0
+  int32 amount = 9;//平安对接 支付金额
+  string productId = 103; //产线
+  int32 payChannel = 104;//支付渠道
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  repeated PayDetail payDetail = 107;//平安对接，支付详情
+}
+
+message PayDetail {
+  string payType = 1;//支付方式：0现金；1供应商优惠券；3平台优惠券；4积分；5其他
+  double amount = 2;//支付明细金额
+}
+
+message  OpenPayStatusRes{
+  int32 retCode = 1;// 服务响应状态
+  string retMsg = 2;// 服务响应状态说明
+  PayStatusContent content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+message  PayStatusContent{
+  string oid = 1;// 高德易行订单id
+  string order_id = 2;// 合作方订单id
+}
+
+message  OpenComplaintReq{
+  string channel = 1;//  渠道标识，由高德分配
+  string cpOrderId = 2;//  合作方订单号
+  string amapOrderId = 3;//  高德订单号
+  string complaintsMobile = 4;// 投诉手机号
+  string userMobile = 5;// 下单手机号
+  string reason = 6;//  问题分类
+  string description = 7;//  用户描述
+  string ext = 8;//  透传字段，需要在投诉回调接口中将该字段以原值返回
+  string passengerId = 9;  //用户ID
+  string complaintType = 10;//投诉类型，0：正常投诉 1：更新投诉（高德将之前用户描述，累积后进行更新同步）, 2：加急投诉
+  string attachments = 11;//用户反馈时上传的图片，json数组字符串，内容为图片url e.g. ["sample/url/for/pic1","sample/url/for/pic2"]
+  string merchantId = 100;// 商户id
+  string order_id = 12; //享道订单id
+  string oid = 13;//合作方订单号
+  string cateName = 14;//第三方问题分类详情
+
+  //高德自动判责
+  string judgeType = 15;  //	判责类型，0：未乘车扣费；1：超时判责；2：司机绕路；3：费用异常；4：恶意附加费；5：司机绕路/费用异常+恶意附加费, 16 高德客服人工判责，19 其他方式已付费
+  string judgeInfo = 16;  //判责信息，json格式字符串，见下方表格
+
+  string cateCode = 17; // 第三方问题分类code
+
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenComplaintRes{
+  int32 retCode = 1;// 服务响应状态
+  string retMsg = 2;// 服务响应状态说明
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+  int64 timestamp = 6;//时间戳
+  string worksheetId = 7;// 返回工单号(支持美团接入，使用入参中的ext值返回)
+}
+
+
+message  OrderEventNotifyReq{
+  string channel = 1;//  渠道标识，由高德分配
+  string order_id = 2;//  订单号
+  string oid = 3;//  第三方订单号
+  string event_type = 4;// 事件类型  "ORDER_ACCEPTED"  合作方回调接单后，高德通过这个事件通知来确认合作方接单成功
+  string payload = 5;// 事件负载数据，json格式字符串
+  string passengerId = 6;  //用户ID
+  int64 timestamp = 7;//时间戳
+  string strive_status = 8; // 抢单结果（1：成功，0：失败，2：精准派本轮抢单失败）
+  string passenger_phone = 9;// 乘客真实号
+  string passenger_virtual_phone = 10;// 乘客真虚拟号
+  string passenger_mask_phone = 11;// 乘客掩码手机号
+
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OrderEventNotifyRes{
+  int32 retCode = 1;// 服务响应状态
+  string retMsg = 2;// 服务响应状态说明
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+  OrderEventNotifyContent content = 6;//响应详情
+}
+
+message OrderEventNotifyContent {
+  DetailDriver driver = 1;
+  DetailVehicle vehicle = 2;
+}
+
+message OpenCancelOderIsDutyReq{
+  string orderNo = 1;// 订单号
+  string passengerId = 2;  //用户ID
+  string merchantId = 3;//商户id
+  string clientId = 4;//商户下一级id 类似appid
+
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message OpenCancelOderIsDutyRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+  int32 cancelFlag = 3;//取消状态
+  string title = 4;// 返回标题
+  string content = 5; //返回内容
+  int32 hasDuty = 6; //是否允许取消   1允许 2不允许
+}
+
+
+
+message OpenConfirmExtraFeeReq{
+
+  string orderNo = 1;//订单号
+  string passengerId = 2;  //用户ID
+  string merchantId = 3;//商户id
+  string clientId = 4;//商户下一级id 类似appid
+
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message OpenConfirmExtraFeeRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+}
+
+message OpenEvaluateDriverReq {
+  string  order_id = 1;//订单号
+  int32  stars = 2;// 星级  （作废）
+  string lable = 3;// 评价标签 （作废）
+
+  string channel = 4;//高德参数 固定值
+  int64 timestamp = 5;//请求时间戳
+  string score = 6;// 高德评价分 1-5分
+  string content = 7;//评价内容
+
+  int32 driver_level = 8;//星级，1-5（非高德）
+
+  string passengerId = 100;  //用户ID
+  string  oid = 101;//外部订单号
+  string merchantId = 102;// 商户id
+  string appId = 103;//应用id
+  string productId = 104; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+
+}
+message OpenEvaluateDriverRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+  int32 extCode = 3;//对应高德服务响应状态，
+  string extMsg = 4;//对应高德服务响应状态说明
+
+}
+
+
+message OpenQueryVirtualPhoneNoReq{
+  string order_id = 2;//订单号
+  string oid = 3;//外部订单号
+  string merchantId = 4;//商户id
+  int32 type = 5;//0 获取司机虚拟号，1获取乘客虚拟号 ，默认0
+  int32 passengerType = 6;// 获取虚拟号乘客类型， 1代叫人（下单人）， 2实际乘车人
+
+  string phone = 7; // 将此号码和司机手机号码绑定(非必填，绑定时使用)  
+  int32 duration = 8;//绑定时长，默认 20分钟(非必填，绑定时使用)
+
+  string passengerId = 100;  //用户ID
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message OpenQueryVirtualPhoneNoRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+  VirtualPhone content = 3;//虚拟手机号
+}
+
+message VirtualPhone {
+  string phone = 3;//虚拟手机号
+  string driverNickName = 4;// 司机昵称 注意非司机 真正姓名
+}
+
+
+message OpenQueryOrderListReq{
+
+  string   channel = 1;//	分配的密钥、token等明文名称
+  int64  timestamp = 2;//	请求时间，Unix Timestamp单位毫秒
+  int32 pageNo = 3;  //页数
+  int32 pageSize = 4;  //每页数量
+  string  order_id = 5;//	订单ID
+  string  oid = 6;//	合作方订单ID
+
+  string passengerPhone = 7;//下单人手机号
+  string actualPassenger_phone = 8;//乘车人手机号
+  int32 status = 10;//订单状态
+  int32 carUseScene = 11;//用车场景：1-加班、2-外勤、3-差旅、4-代叫、5-包车
+  string carLevel = 12; //车型
+  int32 payMode = 14; //支付方式：1-个人支付、2-企业支付
+  string startDate = 15; //用车开始时间
+  string endDate = 16; //用车结束时间
+
+  string apply_no = 17;// 申请单号，每刻用
+  string ent_id = 18;// 企业id，每刻用
+  string user_code = 19;// 下单员工唯一标识，每刻用
+
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+
+}
+
+message OpenQueryOrderListInfo{
+  string orderNo = 1; //订单号
+  string passengerPhone = 2; //乘客手机号
+  int32 orderType = 3; // 订单类型
+  string pickupAddressShort = 4; // 接到乘客短地址
+  string arriveAddressShort = 5; // 到达终点短地址
+  int32 actualAmount = 6; // 实际金额
+  string extOrderNo = 7; //外部订单号
+  string carUseScene = 8;//用车场景：1-加班、2-外勤、3-差旅、4-代叫、5-包车
+  string enterpriseCostcenterName = 9; //企业成本中心
+  string originAddressShort = 10; // 下单起点
+  string destinationAddressShort = 11; // 下单终点
+  string actualPassengerName = 12; //实际乘车人的姓名
+  string actualPassengerMobile = 13;//乘客手机号
+  string outsideStatusText = 14; //状态描述
+  string appointmentTime = 15; //预计用车时间
+  string carUseType = 16; //用车方式：0-普通、1-接机、2-送机、3-包车
+  string enterpriseEmployeeName = 17;// 企业员工名称
+  string enterpriseDeptName = 18;// 企业部门名称
+  string carLevel = 19; //车型
+  repeated AddressPoint point = 20;//途径点
+}
+
+message OpenQueryOrderListRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+  repeated OpenQueryOrderListInfo orders = 3;
+  int32 rowCount = 4; //总行数
+  int32 pageCount = 5; //总页数
+}
+
+
+message OpenQueryRealTimePriceReq{
+  string orderNo = 1;//订单号
+  int32 queryPrice = 2; // 是否查计价 0或1查 2不查
+  string passengerId = 3;  //用户ID
+  string merchantId = 4;//商户id
+  string clientId = 5;//商户下一级id 类似appid
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message OpenQueryRealTimePriceRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+
+  int32 alreadyPrice = 3;// 已生成价格
+  int32 routingTime = 4;// 行驶时间
+  int32 routingDistance = 5;//远途距离
+  int32 waitPrice = 6;//等待费
+  int32 totalFee = 7;//总费用
+
+  string eventCode = 8; // event code
+  string orderNo = 9; // 和入参一样
+}
+
+
+
+message OpenContinueReq{
+  string orderNo = 1;//订单号
+  string merchantId = 2;//商户id
+  string clientId = 3;//商户下一级id 类似appid
+  string passengerId = 100;//用户ID
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message  OpenContinueRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+}
+
+
+message OpenQueryNearCarRes{
+  int32 retCode = 1; //返回标识
+  string retMsg = 2;  //返回信息
+  repeated QtwNearCarList carList = 3;//车辆信息
+}
+message QtwNearCarList{
+  double longitude = 1;//经度
+  double latitude = 2;//纬度
+  string  driverId = 3;//司机ID
+}
+
+message OpenQueryNearCarReq{
+  double lon = 1;//经度
+  double lat = 2;//纬度
+  int32 radius = 3;//半径范围
+  string carLevel = 4;//车级
+  string merchantId = 5;//商户id
+  string clientId = 6;//商户下一级id 类似appid
+
+  string passengerId = 100;//用户ID
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message ProductTypeInfo {
+  string productType = 1;//业务线类型  private-car  ，taxi
+  string productName = 2;// 业务线名称      专车、顺风车
+  repeated CarLevelInfo carLevels = 3;// 车辆信息
+}
+
+message CityInfo {
+  string cityCode = 1; // 城市编码
+  string cityName = 2;  //城市名称
+  repeated ProductTypeInfo productTypes = 4;// 支持的业务线
+}
+
+message OpenQueryCitiesRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+  ContentInfo content = 3;// 城市列表
+}
+
+message ContentInfo{
+  repeated CityInfo cityInfos = 3;// 城市列表
+}
+message OpenQueryCitiesReq {
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 102; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message CarLevelInfo{
+  string carLevel = 1; //运力类型  compact  premium  business
+  string carLevelName = 2;// 运力名词  豪华/普通
+}
+
+message  OpenQueryCityCodeReq{
+  double lat = 1;// 纬度
+  double lon = 2;// 经度
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenQueryCityCodeRes{
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  string cityCode = 3;// 城市编码
+
+}
+message  OpenQueryPriceRuleReq{
+  int64   timestamp = 1;    //请求时间，Unix Timestamp单位毫秒
+  string  city_code = 2;      //城市code，
+  string  product_type = 3;    //产品类型 产品线
+  string  ride_type = 4;    //运力类型，车级 ;110.舒享型 120.悦享型 130.商务七座
+  string  service_id = 5;      //服务类型
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  string order_id = 6;//订单号,非必填，如果有订单号，按照订单命中的计价规则返回
+  string estimate_id = 7;//预估ID ,非必填，如果有预估id，按照预估id命中的计价规则返回
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message  OpenQueryPriceRuleRes{
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  PriceRuleContent content = 3; //计价规则信息
+}
+
+message OpenQueryPriceRuleV2Req{
+  int64   timestamp = 1;    //请求时间，Unix Timestamp单位毫秒
+  string  city_code = 2;      //城市code，
+  string  product_type = 3;    //产品类型 产品线
+  string  ride_type = 4;    //运力类型，车级 ;110.舒享型 120.悦享型 130.商务七座
+  string  service_id = 5;      //服务类型
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  string order_id = 6;//订单号,非必填，如果有订单号，按照订单命中的计价规则返回
+  string estimate_id = 7;//预估ID ,非必填，如果有预估id，按照预估id命中的计价规则返回
+  int32 carUseDuration = 8; // 用车时长，0、非包车，4、半天，8、一天，16、两天，....，n*8、n天
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+  string enterpriseDiscount = 106; //企业折扣
+}
+
+message OpenQueryPriceRuleV2Res{
+  int32 retCode = 1;// 状态码
+  string retMsg = 2;// 状态信息
+  PriceRuleContentV2 content = 3;
+}
+
+message PriceRuleContentV2 {
+  int32 wait_minute = 1;// 司机到达后开始收取等待费的时间
+  string enterprise_discount = 2;// 需方应用关联企业折扣
+  repeated PriceRuleV2 rules = 3;// 工作日规则
+  repeated PriceRuleV2 rules_weekend = 4;// 节假日规则
+}
+
+message PriceRuleV2{
+  string name = 1;
+  string value = 2;
+  repeated PriceRuleV2 sub_items = 3;
+}
+
+
+
+message  PriceRuleContent{
+  string product_type = 1; //	产品类型
+  string ride_type = 2;//	运力类型
+  string service_id = 3;//	服务类型
+  repeated PriceRule prices = 4;//费用信息
+  int32 wait_minute = 5;//司机到达上车点后多久开始收等待费
+}
+message  PriceRule{
+  string type = 1;      //费用类型
+  string description = 2;  //费用描述
+  double amount = 3;    //价格，单位分
+  string rule = 4;    //计价方式 描述
+  repeated FeeMode fee_mode = 5; //分时段计价
+  string amount_unit = 6; // 单位, 用于滴滴前端展示
+  repeated DistanceFeeMode distance_fee_mode = 7; //分里程计价
+}
+message  FeeMode{
+  string begin_hour = 1;//开始时间，HH:mm:ss
+  string end_hour = 2;//结束时间，HH:mm:ss
+  double amount = 3;//单价，单位分
+  string amount_unit = 4; // 单位, 用于滴滴前端展示
+}
+
+message  DistanceFeeMode{
+  int32 begin_distance = 1;//开始里程
+  int32 end_distance = 2;//结束里程
+  double amount = 3;//费用，单位分
+  string amount_unit = 4; // 单位
+  string endCityCode = 5;//终点城市编码 只有跨城费涉及
+}
+
+message OpenQueryCancelRuleReq {
+  int64 timestamp = 1;//请求时间，Unix Timestamp单位毫秒
+  string order_id = 2;//订单号
+  string oid = 3;//合作方订单id
+  string product_type = 4;//产品类型
+  string ride_type = 5;//运力类型
+  string city_code = 6;//城市code
+  int32 service_id = 7;//服务类型
+
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message  OpenQueryCancelRuleRes{
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  CancelRule content = 3; //取消规则
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message OpenQueryCancelRuleV2Req{
+  int64 timestamp = 1;//请求时间，Unix Timestamp单位毫秒
+  string product_type = 2;//产品类型
+  string ride_type = 3;//运力类型
+  string city_code = 4;//城市code
+  int32 service_id = 5;//服务类型
+  string order_id = 6;//订单号
+  string oid = 7;//外部订单号
+
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message OpenQueryCancelRuleV2Res{
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  string order_id = 3;//订单号
+  string oid = 4;//外部订单号
+  CancelV2Rule content = 5; //取消规则
+}
+
+message CancelV2Rule{
+  int32 passengerNoResponsibilityCancelDuration = 1;//乘客免责取消时间
+  int32 driverFreeWaitingTime = 2;// 司机免费等待时间
+  int32 reservationNoResponsibilityCancelDuration = 3;// 司机用车时间前免责取消时间
+  repeated SingleCancelRule rules = 4;//规则文本
+}
+
+message CancelRule {
+  string oid = 1;
+  string order_id = 2;//享道订单号
+  repeated SingleCancelRule rules = 3;//规则文本
+  int32 passengerNoResponsibilityCancelDuration = 4;//乘客免责取消时间
+  int32 driverFreeWaitingTime = 5;// 司机免费等待时间
+  int32 reservationNoResponsibilityCancelDuration = 6;// 司机用车时间前免责取消时间
+  int32 service_id = 7;// 服务类型
+}
+
+message SingleCancelRule {
+  string text = 1; //规则文本
+}
+
+
+message QueryNearByDriverReq{
+  int64 timestamp = 1; //请求时间，Unix Timestamp单位毫秒
+  string city_code = 2; //城市code，
+  double lat = 3;//纬度
+  double lon = 4;//经度
+  int32 radius = 5;//查找半径，单位米(若超过最大的查询半径3000m,则按3000m计算,不允许为负数)
+  string product_type = 6; //产品类型
+  string ride_type = 7;//运力类型
+  int32 count = 8; //美团 限制返回司机数量小于等于count
+  string merchantId = 100;// 商户id
+  string appId = 101;// 应用id
+
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+message QueryNearByDriverRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+  NearByContent content = 3;
+}
+message NearByContent {
+  int32 count = 1;//附近司机数量
+  string product_type = 2; //产品类型
+  repeated NearByInfo detail = 3;//附近车辆信息
+}
+message NearByInfo {
+  double lat = 1;//司机位置纬度
+  double lon = 2;//司机位置经度
+  int32 estimate_time = 3;//预计平均接驾时间(单位：分)
+  string ride_type = 4; //运力类型
+  double direction = 5;//车头角度（正北为0度）
+}
+
+message InvalidInvoiceReq {
+  string invoice_id = 1;//发票业务号
+  string cancel_by = 2;//取消人
+  string reason = 3;//取消原因
+  int64 timestamp = 4;//请求时间，Unix Timestamp单位毫秒
+  string channel = 6;// 分配的密钥、token等明文名称
+  string merchantId = 7;// 商户id
+  string appId = 8;// 应用id
+
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message InvalidInvoiceRes {
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  int32 content = 3;//
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message QueryInvoicedAmountReq {
+  string order_id = 1;//订单号
+  int64 timestamp = 2;//请求时间，Unix Timestamp单位毫秒
+  string channel = 3;// 分配的密钥、token等明文名称
+  string merchantId = 4;// 商户id
+  string appId = 5;// 应用id
+
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message QueryInvoicedAmountRes {
+  int32 retCode = 1;//
+  string retMsg = 2;//
+  InvoiceDetail content = 3;//发票信息
+}
+
+message InvoiceDetail {
+  int64 invoice_amount = 1;//开票金额
+}
+
+message OpenCreateV2Req {
+  string channel = 1; // 分配的密钥、token等明文名称
+  int64 timestamp = 2; // 请求时间，Unix Timestamp单位毫秒
+  string oid = 3; // 高德易行订单ID，防止重复发单
+  double slon = 4; // 出发地经度，接机单非必传
+  double slat = 5; // 出发地纬度，接机单非必传
+  string sname = 6; // 出发地名称，接机单非必传
+  string saddress = 7; // 出发地详细地址
+  double dlon = 8; // 目的地经度
+  double dlat = 9; // 目的地纬度
+  string dname = 10; // 目的地名称
+  string daddress = 11; // 目的地详细地址
+  string flight_no = 12; // 航班号，接机单必传
+  string flight_date = 13; // 航班起飞日期，格式yyyy-MM-dd，接机单必传
+  int32 delay_time = 14; // 落地后多长时间用车，单位（S），接机单必传
+  string aircode = 15; // 到达机场三字码，接机单必传
+  int32 service_id = 16; // 服务类型
+  string estimate_id = 17; // 预估价格ID，参见预估价格接口
+  string passenger_virtual_phone = 19; // 乘客虚拟号码，用于下发给司机联系乘客，如果该字段不存在或为空，则下发passenger_moblie字段给司机
+  string passenger_name = 20; // 乘客姓名（50字符以内），默认为空字符串
+  string passenger_country_code = 21; // 乘客手机号国家代码，默认为+86
+  string product_type = 22; // 产品类型
+  string ride_type = 23; // 运力类型
+  string city_code = 24; // 城市code，默认为出发地所在城市city_code
+  int64 departure_time = 25; // 出发时间，Unix timestamp，单位秒（S），默认为当前时，接机单为非必传，预约单、送机单为必传
+  string driver_message = 26; // 给司机留言的内容，留言内容通过base64编码以后不超过92字符（约69字短信）
+  string passenger_open_id = 27; //高德用户唯一标识，不低于21位
+
+  string user_open_id = 28; //合作方用户id，用户唯一标示
+  string user_mobile = 29; //下单人手机号
+  string user_name = 30; //下单人姓名（50字符以内），默认为空字符串
+  string user_country_code = 31; //下单人手机号国家代码，默认+8
+  string passenger_mobile = 32; // 乘客手机号
+
+  string merchantId = 100; // 商户id
+  string appId = 101; //应用id
+  int64 enterpriseId = 102; // 企业id
+  string payId = 103 ;//企业支付方式 网关透传
+  int32 isEnterprise = 104;// 0.无 1.企业版
+
+  string passenger_phone_mark = 33; //乘客手机号标记，滴滴传入手机号后4位
+
+  string enterpriseDiscount = 35; //企业折扣
+  string costCenterId = 36;//成本中心ID
+  string costCenterName = 37;//成本中心名称
+
+  int32 type = 38;//  滴滴精准派单 订单类型二进制位， 取值为0，代表普通订单 第0位为1表示下听单 第1位为1表示精准派单  从后往前取
+  string ext_driver_id = 39;//滴滴精准派单 预派单司机 type = 1 有效
+
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+
+}
+
+message OpenCreateV2Res {
+  int32 retCode = 1;
+  string retMsg = 2;
+  string orderNo = 3; //订单号
+  string eventCode = 4; // 事件编码，只在成功时返回新建订单的事件编码
+  string createTime = 5; //创建时间
+  string conflictOrderNo = 6; // 冲突的订单号 可能是预约单，也可能是实时单
+  string conflictEventCode = 7; // 冲突的订单号的事件编码
+  int32 sceneCode = 8; // 下单失败时的 场景编码 1=已存在预约单 2=黑名单用户 3=取消次数太多 4=有未支付订单 5=有行程中订单
+  int32 payAdvanceFlag = 9; //是否需要预付校验，0否，1是
+  //新增
+  string conflictOrderNoRemark = 10; //描述
+  string sceneCodeRemark = 11; //描述
+  string conflictEventCodeRemark = 12; //描述
+  int64 entPayable = 13; //   企业可支付金额
+  int64 empPayable = 14; //  员工支付金额
+  int32 entComboPay = 15; //  企业组合支付 0=企业付 1=员工与企业共同付
+  string entComboPayMsg = 16; //  额度不足时文案
+}
+
+message ModifyDestinationReq {
+  string channel = 1; // 分配的密钥、token等明文名称
+  int64 timestamp = 2; // 请求时间，Unix Timestamp单位毫秒
+  string oid = 3; // 高德订单ID，防止重复发单
+  string order_id = 4;//订单号
+  string estimate_id = 5;//预估标识，创建订单时使用，有效期10分钟
+  double clon = 6;//当前位置经度，接机单非必传
+  double clat = 7;//当前位置纬度，接机单非必传
+  string cname = 8;//当前位置名称，接机单非必传
+  string caddress = 9;//当前位置详细地址
+  string cpoi_id = 10;//当前位置POIID，可能为空
+  string cadcode = 11;//当前位置区县code，可能为空
+  double dlon = 12;//目的地经度
+  double dlat = 13;//目的地纬度
+  string dname = 14;//目的地名称
+  string daddress = 15;//目的地详细地址 可能为空
+  string dpoi_id = 16;//目的地POIID，可能为空
+  string dadcode = 17;//目的地区县code，可能为空
+  string city_code = 18;//城市code，默认为出发地所在城市city_code 可能为空
+  bool is_modify = 19;//是否修改 false-获取修改后的预估价格，true-进行修改操作
+
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+
+  string clientTraceId = 105;// 记录客户端请求自身traceId,比如 滴滴 RID 方便问题排查
+}
+
+message ModifyDestinationRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  PriceContent content = 3;//详情
+  int32 extCode = 4;//对应高德服务响应状态，
+  string extMsg = 5;//对应高德服务响应状态说明
+}
+
+message QueryTracesByOrderNoReq {
+  string  orderNo = 3;//享道订单ID
+  string  oid = 4;//	外部订单ID
+  string passengerId = 5;  //用户ID
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string productId = 103; //产线
+  string clientTraceId = 105;// 记录客户端请求自身traceId
+}
+
+message QueryTracesByOrderNoRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+
+  repeated string pointList = 10; // 坐标点列表
+}
+
+message CondemnNotifyBySaicReq{
+  string key = 1;//
+  string orderId = 2;//享道订单ID //
+  string oid = 3;//外部订单ID //
+  string worksheetId = 4;//合作方工单号 //
+  string oWorksheetId = 5;//享道工单号 //
+  string requestId = 6;//唯一键，享道将以requestId实现幂等
+  int32 operationType = 7; //处理类型：2-退款
+  string processTime = 8; //处理时间 格式yyyy-MM-dd HH:mm:ss
+  string handler = 9; //合作方客服的处理人
+  string reason = 10;//问题分类 1支付失败 2未乘车扣费 3其他方式已付费 4费用不认可 5重复扣费 6其他费用问题 7投诉司机 8物品丢失 9取消订单 10发票问题 11其他投诉问题
+  string operationResult = 11;//合作方客服的处理意见
+  string sourceType = 12;//投诉来源类型
+  string remark = 13;//备注
+
+  Refund refund = 15; //退款信息，退款场景必填
+
+  string appId = 100;//应用id
+  string merchantId = 101;// 商户id
+  int32 productId = 102;//产线
+}
+
+message Refund {
+  int32 type = 2; //退款类型， 1全额退款、2部分退款
+  int32 amount = 3; //退款金额（分）
+}
+
+message CondemnNotifyBySaicRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+
+message BindDriverVirtualReq{
+  string phone = 1; // 绑定手机号或固话
+  string orderId = 2;//享道订单ID //
+  string oid = 3;//外部订单ID //
+  int32 duration = 4;//绑定时长，默认 20分钟
+
+  string appId = 100;//应用id
+  string merchantId = 101;// 商户id
+  int32 productId = 102;//产线
+}
+message BindDriverVirtualRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+  string vPhone = 3; // 虚拟号
+  string driverName = 4;// 司机昵称 注意非司机 真正姓名
+}
+message SetCancelReasonByPassengerReq {
+  string passengerId = 1; //乘客id
+  string orderId = 2; //订单号
+  string reason = 3; //原因
+  string cityCode = 4; //城市编码
+  int32 orderType = 5; //订单类型
+}
+
+message SetCancelReasonByPassengerRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+
+message BatchAddEntUserReq {
+  string appId = 1;
+  string merchantId = 2;
+
+  int64 timestamp = 3;
+  int64 enterprise_id = 4;
+  repeated OpenEntUser users = 5;// 用户列表
+  string batch_no = 6;//+批次号，接入方控制唯一
+}
+
+message OpenEntUser{
+  string costcenter_id = 1;// 成本中心id
+  string user_name = 2;// 用户姓名
+  string user_unique_id = 3;// 用户唯一标识
+  string user_mobile_prefix = 4;// 手机号前缀
+  string user_mobile = 5;// 手机号
+  string user_email = 6;// 邮箱
+  string user_dept = 7;//+部门信息，可选
+}
+
+message BatchAddEntUserRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  BatchEntOptContent content = 3;
+}
+
+message BatchEntOptContent {
+  int32 success_count = 1;
+  int32 failure_count = 2;
+  string batch_no = 3;
+}
+
+message BatchDelEntUserReq {
+  string appId = 1;
+  string merchantId = 2;
+
+  int64 timestamp = 3;
+  int64 enterprise_id = 4;
+  repeated string userUniqueIds = 5;
+  string batch_no = 6;//+批次号，接入方控制唯一
+}
+
+message BatchDelEntUserRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  BatchEntOptContent content = 3;
+}
+
+message QueryEntUserListReq {
+  string appId = 1;// 应用id
+  string merchantId = 2;// 商户号
+  int64 timestamp = 3;// 时间戳
+  int64 enterprise_id = 4;// 企业id
+  int32 page_no = 5;// 页码
+  int32 page_size = 6;// 分页数量
+}
+
+message QueryEntUserListRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  EntUserListContent content = 3;
+}
+
+message EntUserListContent {
+  int32 page_no = 1;// 页码 0开始
+  int32 page_size = 2;// 当前页数量
+  int32 total = 3;// 数据总数量
+  repeated OpenEntUser users = 4;// 用户列表
+}
+
+message SyncRefundReq {
+  string appId = 1;// 应用id
+  string merchantId = 2;// 商户号
+
+  int64 timestamp = 3;// 时间戳
+  string order_id = 4;// 享道订单号
+  string oid = 5;// 外部订单号
+  string refund_result = 6;// 退款处理结果 1-成功 2-失败
+  string refund_time = 7;// 退款时间,yyyy-MM-dd HH:mm:ss
+  int64 actual_refund = 8;// 实际退款金额，单位分
+  string refund_id = 9;// 享道退款id，来自退款通知接口
+  string third_refund_id = 10;// 商户退款id，refund_id不为空时，非必传
+}
+
+message SyncRefundRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  int32 extCode = 3;//对应高德服务响应状态，
+  string extMsg = 4;//对应高德服务响应状态说明
+}
+
+message CancelDutyDetail{
+  int32 operatorBy = 1; //操作退款方 0=未知,1=享道系统,2=乘客/合作方系统,3=客服,4=司机
+  int32 cancelBy = 2; //发起退款方 0=未知,1=享道平台,2=乘客,3=司机
+  int32 isPassengerDuty = 3;//是否乘客责任 1=是 2=不是
+  string cancelDutyContent = 4; //取消判责说明
+}
+
+message SetDestInfoReq {
+  string merchantId = 100;// 商户id
+  int64  timestamp = 101;    //请求时间，Unix Timestamp单位毫秒
+  string driverId = 1; //司机id 操作方为司机时必填
+  string passengerId = 2; //乘客id 操作方为乘客时必填
+  int32 operateBy = 3; // 操作方 1：乘客 2：司机 
+  string orderNo = 4; //订单号
+  AddressPoint destPoint = 5; //目的地
+  repeated AddressPoint viaPoint = 6; //途经点
+  int32 updateBySystem = 7; //是否需要推送MQTT 0推送 1不推送 （到达终点之后系统自动更新终点不需要推送）
+  string productId = 8; // 产品线
+}
+
+message SetDestInfoRes {
+  int32 retCode = 1;
+  string retMsg = 2;
+  string orderNo = 3; //订单号
+  int32 status = 4; //订单状态
+}
+
+message SyncPayNotifyReq{
+  string merchantId = 100;// 商户id
+  string appId = 101;//应用id
+  string oid = 3;// 合作方订单ID
+  string orderId = 4;//内部订单ID
+  int32 status = 5;// 支付状态，0表示失败，1表示成功
+  string couponInfo = 6;//优惠信息
+  int32 couponAmount = 7;//优惠券金额，单位分   单次优惠金额
+  int32 amount = 9;// 支付金额   单次支付金额
+  string payTime = 10;//本次支付时间 yyyy-MM-dd HH:mm:ss
+  int32 payChannel = 104;//支付渠道
+}
+
+message SyncPayNotifyRes{
+  int32 retCode = 1;
+  string retMsg = 2;
+}
+
