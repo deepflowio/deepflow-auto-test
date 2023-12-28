@@ -7,9 +7,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"time"
-	"sync/atomic"
 )
 
 const (
@@ -139,7 +139,7 @@ func main() {
 	}
 
 	for serverPort := MIN_SERVER_PORT; ; serverPort++ {
-		if  atomic.LoadInt64(&liveConnection) + 1 > int64(maxConcurrent){
+		if atomic.LoadInt64(&liveConnection)+1 > int64(maxConcurrent) {
 			time.Sleep(time.Second)
 			timeStart = time.Now()
 			sleepCounter = 0

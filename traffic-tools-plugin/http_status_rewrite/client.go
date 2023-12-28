@@ -1,25 +1,23 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
-	"net/http"
 	"io/ioutil"
-	"strconv"
+	"net/http"
 	"time"
 )
 
 const (
-	SERVER_PORT  = 8080
-	REQUEST_INTERVAL = time.Second 
+	SERVER_PORT      = 8080
+	REQUEST_INTERVAL = time.Second
 )
 
 var (
-	newFlow    = 80
-	serverIp   = ""
+	requestPerSecond = flag.Int("r", 100, "request per second")
 )
 
-func newRequest(client *http.Client,req *http.Request)  {
+func newRequest(client *http.Client, req *http.Request) {
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -32,38 +30,35 @@ func newRequest(client *http.Client,req *http.Request)  {
 		fmt.Println("read response err", err)
 		return
 	}
-	
+
 	time.Sleep(REQUEST_INTERVAL)
 }
 
-
 func main() {
-	if len(os.Args) == 2{
-		newFlow, _ = strconv.Atoi(os.Args[1])
-	}
+	flag.Parse()
 	ipAddress := "http://127.0.0.1:8080"
 	sleepCounter := 0
 	timeStart := time.Now()
 	transport := &http.Transport{
-		MaxIdleConns:        100, 
-		MaxIdleConnsPerHost: 100, 
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 100,
 	}
 	client := &http.Client{
 		Transport: transport,
-		Timeout: 100 * time.Second,
+		Timeout:   100 * time.Second,
 	}
 	req, err := http.NewRequest("GET", ipAddress+"/v1/vtaps/", nil)
-    if err != nil {
-        fmt.Println("create req err:", err)
-        return
-    }
+	if err != nil {
+		fmt.Println("create req err:", err)
+		return
+	}
 
-	for  {
+	for {
 		go newRequest(client, req)
-		time.Sleep(time.Second / time.Duration(newFlow) / 6)
+		time.Sleep(time.Second / time.Duration(*requestPerSecond) / 6)
 
 		sleepCounter += 1
-		if sleepCounter >= newFlow {
+		if sleepCounter >= *requestPerSecond {
 			timeElapsed := time.Since(timeStart)
 			fmt.Printf("Create %d requests, cost time %v\n", sleepCounter, timeElapsed)
 			if timeElapsed < time.Second {

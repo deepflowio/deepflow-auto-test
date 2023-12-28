@@ -1,20 +1,21 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"golang.org/x/net/dns/dnsmessage"
 	"net"
-	"os"
-	"strconv"
 	"time"
 )
-var (
-	newFlow          = 1
-	request_per_flow = 1
-	request_interval = time.Second / 10
 
+var (
+	request_per_conn = flag.Int("r", 10, "Number of requests per connection")
+	concurrentConn   = flag.Int("c", 1, "Number of concurrent connections")
+	request_interval = time.Second / 10
 )
+
 func newConnection(queryData []byte) {
+	flag.Parse()
 	serverAddr := "127.0.0.1:19053"
 
 	// 创建 UDP 连接到 DNS 服务器
@@ -27,7 +28,7 @@ func newConnection(queryData []byte) {
 		fmt.Printf("Error creating UDP connection: %v\n", err)
 	}
 	defer conn.Close()
-	for i:=0; i < request_per_flow; i++{
+	for i := 0; i < *request_per_conn; i++ {
 		conn.Write(queryData)
 		responseData := make([]byte, 512)
 		conn.Read(responseData)
@@ -39,7 +40,7 @@ func main() {
 
 	message := dnsmessage.Message{
 		Header: dnsmessage.Header{
-			ID:               12345, 
+			ID:               12345,
 			Response:         false,
 			OpCode:           0,
 			RecursionDesired: true,
@@ -57,25 +58,18 @@ func main() {
 	if err != nil {
 		fmt.Printf("Failed to encode DNS query: %v\n", err)
 	}
-	if len(os.Args) == 2{
-		newFlow, _ = strconv.Atoi(os.Args[1])
-	}
-	if len(os.Args) == 3{
-		newFlow, _ = strconv.Atoi(os.Args[1])
-		request_per_flow, _ = strconv.Atoi(os.Args[2])
-	}
 	sleepCounter := 0
 	timeStart := time.Now()
 
-	for  {
+	for {
 		go newConnection(queryData)
-		time.Sleep(time.Second / time.Duration(newFlow) / 6)
+		time.Sleep(time.Second / time.Duration(*concurrentConn) / 6)
 
 		sleepCounter += 1
-		if sleepCounter >= newFlow {
+		if sleepCounter >= *concurrentConn {
 			timeElapsed := time.Since(timeStart)
 			if timeElapsed < time.Second {
-				fmt.Printf("Create %d connections\n",sleepCounter)
+				fmt.Printf("Create %d connections\n", sleepCounter)
 				time.Sleep(time.Second - timeElapsed)
 			}
 
