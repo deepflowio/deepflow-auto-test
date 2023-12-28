@@ -1,4 +1,7 @@
 # 打流工具介绍
+工具用于生成触发wasm和c插件的流量
+
+[插件地址](https://github.com/deepflowio/deepflow-wasm-go-sdk)
 
 ## 1. DNS 打流工具
 
@@ -26,7 +29,7 @@
 
 **响应 (Resp)：**
 - Data 添加 "code" 和 "data" 字段用于 HTTP 插件计算
-- 
+
 **使用方法：**
 
 ```
@@ -38,7 +41,7 @@
 
 **协议：** HTTP (L7)
 
-通过监听 HTTP 响应，修改 Data 字段的 "OPT_STATUS" 为 "SUCCESS"，同时填充其他数据，以触发 TCP 分片（TCP Fragment）。
+HTTP 响应，设置Data 的"OPT_STATUS"字段的值为 "SUCCESS"，同时填充其他数据，以触发 TCP 分片（TCP Fragment）。
 
 **响应 (Resp)：**
 - Data 添加 "OPT_STATUS": "SUCCESS"，其他填充数据用于触发 TCP 分片
@@ -54,7 +57,7 @@
 
 **协议：** gRPC
 
-通过 gRPC 调用触发，指定 "Trace" 和 "Trace" 字段。该工具用于测试和评估http2_uprobe插件性能。
+通过 gRPC 调用触发，指定 "Msg" 和 "Trace" 字段。该工具用于测试和评估http2_uprobe插件性能。
 
 **使用方法：**
 
