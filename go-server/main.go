@@ -209,7 +209,7 @@ func main() {
 		http.ListenAndServe(":8080", nil)
 	}()
 
-	// TLS 
+	// TLS
 	certPath := "/app/certificate/certificate.pem"
 	keyPath := "/app/certificate/private-key.pem"
 
@@ -221,5 +221,5 @@ func main() {
 			fmt.Println("HTTPS server error:", err)
 		}
 	}()
-	select{}
+	select {}
 }

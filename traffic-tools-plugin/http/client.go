@@ -1,26 +1,24 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
-	"net/http"
 	"io/ioutil"
-	"strconv"
+	"net/http"
 	"time"
 )
 
 const (
-	SERVER_PORT  = 8080
+	SERVER_PORT      = 8080
 	REQUEST_INTERVAL = time.Second / 10
 )
 
 var (
-	newFlow            = 80
-
+	requestPerSecond = flag.Int("r", 100, "request per second")
 )
 
-func newRequest(client *http.Client,req *http.Request)  {
-
+func newRequest(client *http.Client, req *http.Request) {
+	flag.Parse()
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("request err:", err)
@@ -32,41 +30,36 @@ func newRequest(client *http.Client,req *http.Request)  {
 		fmt.Println("read response err", err)
 		return
 	}
-	
+
 	time.Sleep(REQUEST_INTERVAL)
 }
 
-
 func main() {
-	if len(os.Args) == 2{
-		newFlow, _ = strconv.Atoi(os.Args[1])
-	}
-
 	sleepCounter := 0
 	timeStart := time.Now()
 	transport := &http.Transport{
-		MaxIdleConns:        100, 
-		MaxIdleConnsPerHost: 100, 
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 100,
 	}
 	client := &http.Client{
 		Transport: transport,
-		Timeout: 100 * time.Second,
+		Timeout:   100 * time.Second,
 	}
-	req, err := http.NewRequest("GET", "http://localhost:8080/user_info?username=dftest", nil)
-    if err != nil {
-        fmt.Println("create req err:", err)
-        return
-    }
+	req, err := http.NewRequest("GET", "http://localhost:8080/user_info?username=dftest&type=1", nil)
+	if err != nil {
+		fmt.Println("create req err:", err)
+		return
+	}
 
 	jsonValue := `{"trace_id": "101", "span_id": "110"}`
-    req.Header.Set("Custom-Trace-Info", jsonValue)
+	req.Header.Set("Custom-Trace-Info", jsonValue)
 
-	for  {
+	for {
 		go newRequest(client, req)
-		time.Sleep(time.Second / time.Duration(newFlow) / 6)
+		time.Sleep(time.Second / time.Duration(*requestPerSecond) / 6)
 
 		sleepCounter += 1
-		if sleepCounter >= newFlow {
+		if sleepCounter >= *requestPerSecond {
 			timeElapsed := time.Since(timeStart)
 			fmt.Printf("Create %d requests, cost time %v\n", sleepCounter, timeElapsed)
 			if timeElapsed < time.Second {

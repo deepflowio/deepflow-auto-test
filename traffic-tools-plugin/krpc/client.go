@@ -1,11 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
-	"net/http"
 	"io/ioutil"
-	"strconv"
+	"net/http"
 	"time"
 )
 
@@ -14,11 +13,11 @@ const (
 )
 
 var (
-	newFlow   = 700
-	clusterIP = ""
+	requestPerSecond = flag.Int("r", 100, "request per second")
+	clusterIP        = flag.String("h", "", "krpc pod clusterIP")
 )
 
-func newRequest(client *http.Client,req *http.Request)  {
+func newRequest(client *http.Client, req *http.Request) {
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -31,41 +30,34 @@ func newRequest(client *http.Client,req *http.Request)  {
 		fmt.Println("read response err", err)
 		return
 	}
-	
+
 	time.Sleep(REQUEST_INTERVAL)
 }
 
-
 func main() {
-	if len(os.Args) == 2{
-		clusterIP = os.Args[1]
-	}
-	if len(os.Args) == 3{
-		clusterIP = os.Args[1]
-		newFlow, _ = strconv.Atoi(os.Args[2])
-	}
+	flag.Parse()
 	sleepCounter := 0
 	timeStart := time.Now()
 	transport := &http.Transport{
-		MaxIdleConns:        100, 
-		MaxIdleConnsPerHost: 100, 
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 100,
 	}
 	client := &http.Client{
 		Transport: transport,
-		Timeout: 100 * time.Second,
+		Timeout:   100 * time.Second,
 	}
-	req, err := http.NewRequest("GET", "http://"+ clusterIP +":8450/v1/openapi/queryPriceRule", nil)
+	req, err := http.NewRequest("GET", "http://"+*clusterIP+":8450/v1/openapi/queryPriceRule", nil)
 	// req.Close = true
-    if err != nil {
-        fmt.Println("create req err:", err)
-        return
-    }
-	for  {
+	if err != nil {
+		fmt.Println("create req err:", err)
+		return
+	}
+	for {
 		go newRequest(client, req)
-		time.Sleep(time.Second / time.Duration(newFlow) / 6)
+		time.Sleep(time.Second / time.Duration(*requestPerSecond) / 6)
 
 		sleepCounter += 1
-		if sleepCounter >= newFlow {
+		if sleepCounter >= *requestPerSecond {
 			timeElapsed := time.Since(timeStart)
 			fmt.Printf("Create %d requests, cost time %v\n", sleepCounter, timeElapsed)
 			if timeElapsed < time.Second {
