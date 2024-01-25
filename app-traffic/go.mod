@@ -1,4 +1,4 @@
-module app-traffic/m/v2
+module github.com/deepflowio/deepflow-automation-test/app-traffic
 
 go 1.20
 

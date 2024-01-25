@@ -1,8 +1,13 @@
 package client
 
-type Client interface {
+import (
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
+)
+
+type EngineClient interface {
 	Exec() error
-	GetLantency() *LantencyResult
+	GetLantency() *common.LantencyResult
 	GetCount() *int
 	GetErrCount() *int
+	Close()
 }
