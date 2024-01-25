@@ -19,14 +19,15 @@ var (
 
 func main() {
 	flag.Parse()
-	var engineClinet *client.EngineClient
-	if fengine == "redis" {
-		engineClinet = redis.RedisClient{
-			Addr:     fhost,
-			Password: fpasswd,
+	var engineClinet client.EngineClient
+	if *fengine == "redis" {
+		engineClinet = &redis.RedisClient{
+			Addr:     *fhost,
+			Password: *fpasswd,
 			DB:       0,
-		}.InitClient()
-	} else if fengine == "mysql" {
+		}
+		engineClinet.InitClient()
+	} else if *fengine == "mysql" {
 
 	} else {
 		log.Fatal("fengine, -e, should be designed [redis, mysql]")
@@ -36,7 +37,7 @@ func main() {
 	for i := 0; i < *fthreads; i++ {
 		go func(index int) {
 			rate := (*frate + *fthreads - 1) / *fthreads
-			log.Printf("[*] Start %s App Traffic %s, date rate %d pps.\n", fengine, fhost, rate)
+			log.Printf("[*] Start %s App Traffic %s, date rate %d pps.\n", *fengine, *fhost, rate)
 
 			// flood
 			// Take 10 tokens each time to avoid too high call frequency of the Take() function
