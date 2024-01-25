@@ -9,7 +9,7 @@ import (
 )
 
 type RedisClient struct {
-	lantencys []int
+	lantencys []time.Duration
 	count     int
 	errCount  int
 
@@ -19,19 +19,18 @@ type RedisClient struct {
 	Client   *redis.Client
 }
 
-func (rc *RedisClient) InitClient() *RedisClient {
+func (rc *RedisClient) InitClient() {
 	client := redis.NewClient(&redis.Options{
 		Addr:     rc.Addr,     // redis地址
 		Password: rc.Password, // 密码
 		DB:       rc.DB,       // 使用默认数据库
 	})
 	rc.Client = client
-	return rc
 }
 
-func (rc *RedisClient) Exec() {
+func (rc *RedisClient) Exec() error {
 	rc.get()
-	return
+	return nil
 }
 
 func (rc *RedisClient) GetCount() int {
@@ -48,9 +47,9 @@ func (rc *RedisClient) GetLantency() *common.LantencyResult {
 
 func (rc *RedisClient) set() {
 	start := time.Now()
-	err := client.Set("name", "john", 0).Err()
+	err := rc.Client.Set("name", "john", 0).Err()
 	lantency := time.Since(start)
-	rc.lantency = append(rc.lantency, lantency)
+	rc.lantencys = append(rc.lantencys, lantency)
 	if err != nil {
 		rc.errCount += 1
 		fmt.Println(err)
@@ -63,7 +62,7 @@ func (rc *RedisClient) get() {
 	start := time.Now()
 	_, err := rc.Client.Get("name").Result()
 	lantency := time.Since(start)
-	rc.lantency = append(rc.lantency, lantency)
+	rc.lantencys = append(rc.lantencys, lantency)
 	if err != nil {
 		rc.errCount += 1
 		fmt.Println(err)

@@ -6,8 +6,9 @@ import (
 
 type EngineClient interface {
 	Exec() error
+	InitClient()
 	GetLantency() *common.LantencyResult
-	GetCount() *int
-	GetErrCount() *int
+	GetCount() int
+	GetErrCount() int
 	Close()
 }
