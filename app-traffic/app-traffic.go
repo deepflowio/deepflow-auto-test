@@ -51,7 +51,8 @@ func main() {
 			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rate)
 
 			// Take 10 tokens each time to avoid too high call frequency of the Take() function
-			rate_limit := ratelimit.New(rate / 10)
+			// WithoutSlack cancel maxSlack
+			rate_limit := ratelimit.New(rate/10, ratelimit.WithoutSlack)
 			for {
 				rate_limit.Take()
 				engineClinet.Exec()
