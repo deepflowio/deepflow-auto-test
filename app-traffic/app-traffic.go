@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	fhost       = flag.String("h", "localhost:12345", "Target host:port")
+	fhost       = flag.String("h", "", "Target host:port")
 	fpasswd     = flag.String("p", "", "DB password")
-	frate       = flag.Int("r", 100000, "Packets per second")
+	frate       = flag.Int("r", 0, "Packets per second")
 	fthreads    = flag.Int("t", 1, "Number of threads")
 	fengine     = flag.String("e", "", "Engine of DB [redis, mysql]")
 	fduration   = flag.Int("d", 0, "execution time in seconds")
@@ -25,6 +25,23 @@ var (
 
 func main() {
 	flag.Parse()
+
+	// check flag
+	if *fhost == "" {
+		log.Fatal("fhost -h should be assigned")
+	}
+	if *frate == 0 {
+		log.Fatal("frate -r should be assigned")
+	}
+	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis") {
+		log.Fatal("fengine -e should be assigned [redis, mysql]")
+	}
+	if *fduration == 0 {
+		log.Fatal("fduration -d should be assigned")
+	}
+	if *fconcurrent > 1 && (*fthreads)*(*fconcurrent)*10 > *frate {
+		log.Fatal("(fthreads * fconcurrent * 10) should be less than (frate)")
+	}
 
 	engines := make([]client.EngineClient, *fthreads)
 	var count int
@@ -48,8 +65,6 @@ func main() {
 				SessionCount: *fconcurrent,
 			}
 
-		} else {
-			log.Fatal("fengine, -e, should be designed [redis, mysql]")
 		}
 		engines[i] = engineClinet
 
