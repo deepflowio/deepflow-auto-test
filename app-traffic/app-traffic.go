@@ -7,18 +7,20 @@ import (
 	"time"
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client"
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mysql"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/redis"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
 	"go.uber.org/ratelimit"
 )
 
 var (
-	fhost     = flag.String("h", "localhost:12345", "Target host:port")
-	fpasswd   = flag.String("p", "", "DB password")
-	frate     = flag.Int("r", 100000, "Packets per second")
-	fthreads  = flag.Int("t", 1, "Number of threads")
-	fengine   = flag.String("e", "", "Engine of DB [redis, mysql]")
-	fduration = flag.Int("d", 0, "execution time in seconds")
+	fhost       = flag.String("h", "localhost:12345", "Target host:port")
+	fpasswd     = flag.String("p", "", "DB password")
+	frate       = flag.Int("r", 100000, "Packets per second")
+	fthreads    = flag.Int("t", 1, "Number of threads")
+	fengine     = flag.String("e", "", "Engine of DB [redis, mysql]")
+	fduration   = flag.Int("d", 0, "execution time in seconds")
+	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
 )
 
 func main() {
@@ -38,6 +40,13 @@ func main() {
 				DB:       0,
 			}
 		} else if *fengine == "mysql" {
+			engineClinet = &mysql.MysqlClient{
+				Addr:         *fhost,
+				Password:     *fpasswd,
+				DB:           "app_traffic_test",
+				User:         "root",
+				SessionCount: *fconcurrent,
+			}
 
 		} else {
 			log.Fatal("fengine, -e, should be designed [redis, mysql]")
@@ -47,9 +56,9 @@ func main() {
 		go func(index int) {
 			engineClinet.InitClient()
 			defer engineClinet.Close()
-			rate := (*frate + *fthreads - 1) / *fthreads
-			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rate)
-
+			rps_rate := (*frate + *fthreads - 1) / *fthreads
+			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rps_rate)
+			rate := rps_rate / *fconcurrent
 			// Take 10 tokens each time to avoid too high call frequency of the Take() function
 			// WithoutSlack cancel maxSlack
 			rate_limit := ratelimit.New(rate/10, ratelimit.WithoutSlack)
