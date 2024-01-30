@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
@@ -29,16 +30,16 @@ func (mc *MysqlClient) InitClient() {
 	db, _ := sql.Open("mysql", dataSourceName)
 	_, err = db.Exec("CREATE DATABASE IF NOT EXISTS app_traffic_test")
 	if err != nil {
-		fmt.Println("create DB error:", err)
+		log.Fatal("create DB error:", err)
 	}
 	db.Close()
 	mc.Client, err = sql.Open("mysql", mc.User+":"+mc.Password+"@tcp("+mc.Addr+")/"+mc.DB)
 	if err != nil {
-		fmt.Println("create DB error:", err)
+		log.Fatal("create DB error:", err)
 	}
+	mc.Client.SetMaxOpenConns(mc.SessionCount) // 最大连接数
+	mc.Client.SetMaxIdleConns(mc.SessionCount) // 保留连接数
 	mc.StartTime = time.Now()
-	mc.Client.SetMaxOpenConns(mc.SessionCount)
-	mc.Client.SetMaxIdleConns(mc.SessionCount)
 }
 
 func (mc *MysqlClient) Exec() error {
