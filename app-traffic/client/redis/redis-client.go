@@ -12,12 +12,14 @@ type RedisClient struct {
 	lantencys []*time.Duration
 	count     int
 	errCount  int
+	keys      []string
 
-	Addr      string
-	Password  string
-	DB        int
-	Client    *redis.Client
-	StartTime time.Time
+	Addr       string
+	Password   string
+	DB         int
+	Client     *redis.Client
+	StartTime  time.Time
+	Complexity int
 }
 
 func (rc *RedisClient) InitClient() {
@@ -28,11 +30,23 @@ func (rc *RedisClient) InitClient() {
 	})
 	rc.Client = client
 	// init data needed by get func
-	err := rc.Client.Set("name", "john", 0).Err()
-	if err != nil {
-		fmt.Println("error: ", err)
+	rc.keys = make([]string, rc.Complexity)
+	for i := 0; i < rc.Complexity; i++ {
+		key := fmt.Sprintf("key%d", i)
+		rc.keys[i] = key
 	}
+	rc.setMap()
 	rc.StartTime = time.Now()
+}
+
+func (rc *RedisClient) setMap() {
+	for i := 0; i < rc.Complexity; i++ {
+		value := fmt.Sprintf("value%d", i)
+		err := rc.Client.HSet("appHash", rc.keys[i], value).Err()
+		if err != nil {
+			fmt.Println("error: ", err)
+		}
+	}
 }
 
 func (rc *RedisClient) Exec() error {
@@ -72,7 +86,7 @@ func (rc *RedisClient) set() {
 
 func (rc *RedisClient) get() {
 	start := time.Now()
-	_, err := rc.Client.Get("name").Result()
+	_, err := rc.Client.HMGet("appHash", rc.keys...).Result()
 	lantency := time.Since(start)
 	rc.lantencys = append(rc.lantencys, &lantency)
 	if err != nil {
