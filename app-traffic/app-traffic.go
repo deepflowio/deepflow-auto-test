@@ -21,6 +21,7 @@ var (
 	fengine     = flag.String("e", "", "Engine of DB [redis, mysql]")
 	fduration   = flag.Int("d", 0, "execution time in seconds")
 	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
+	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
 )
 
 func main() {
@@ -42,6 +43,9 @@ func main() {
 	if *fconcurrent > 1 && (*fthreads)*(*fconcurrent)*10 > *frate {
 		log.Fatal("(fthreads * fconcurrent * 10) should be less than (frate)")
 	}
+	if *fcomplexity < 1 {
+		log.Fatal("fcomplexity should > 0")
+	}
 
 	engines := make([]client.EngineClient, *fthreads)
 	var count int
@@ -52,9 +56,10 @@ func main() {
 		var engineClinet client.EngineClient
 		if *fengine == "redis" {
 			engineClinet = &redis.RedisClient{
-				Addr:     *fhost,
-				Password: *fpasswd,
-				DB:       0,
+				Addr:       *fhost,
+				Password:   *fpasswd,
+				DB:         0,
+				Complexity: *fcomplexity,
 			}
 		} else if *fengine == "mysql" {
 			engineClinet = &mysql.MysqlClient{
