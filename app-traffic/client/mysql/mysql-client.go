@@ -14,6 +14,7 @@ type MysqlClient struct {
 	lantencys []*time.Duration
 	count     int
 	errCount  int
+	values    []any
 
 	Addr         string
 	Password     string
@@ -23,13 +24,17 @@ type MysqlClient struct {
 	StartTime    time.Time
 	SessionCount int
 	Complexity   int
+	Sql          string
 }
 
 func (mc *MysqlClient) InitClient() {
 	var err error
+	if mc.DB == "" {
+		mc.DB = "app_traffic_test"
+	}
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/", mc.User, mc.Password, mc.Addr)
 	db, _ := sql.Open("mysql", dataSourceName)
-	_, err = db.Exec("CREATE DATABASE IF NOT EXISTS app_traffic_test")
+	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", mc.DB))
 	if err != nil {
 		log.Fatal("create DB error:", err)
 	}
@@ -40,7 +45,24 @@ func (mc *MysqlClient) InitClient() {
 	}
 	mc.Client.SetMaxOpenConns(mc.SessionCount) // 最大连接数
 	mc.Client.SetMaxIdleConns(mc.SessionCount) // 保留连接数
-	mc.StartTime = time.Now()
+
+	mc.Sql = mc.getQuerySQL()
+	rows, err := mc.Client.Query(mc.Sql)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	cols, err := rows.Columns()
+	if err != nil {
+		panic(err)
+	}
+	mc.values = make([]any, len(cols))
+	data := make([][]byte, len(cols))
+
+	// 将字节切片地址赋值给空接口切片
+	for i := range mc.values {
+		mc.values[i] = &data[i]
+	}
 }
 
 func (mc *MysqlClient) Exec() error {
@@ -72,6 +94,9 @@ func (mc *MysqlClient) Close() {
 }
 
 func (mc *MysqlClient) getQuerySQL() (sql string) {
+	if mc.Sql != "" {
+		return mc.Sql
+	}
 	sql = "SELECT 0"
 	for i := 1; i < mc.Complexity; i++ {
 		sql = fmt.Sprintf("%s, %d", sql, i)
@@ -82,11 +107,10 @@ func (mc *MysqlClient) getQuerySQL() (sql string) {
 func (mc *MysqlClient) QueryTest() error {
 	var err error
 	rows := make([]*sql.Row, mc.SessionCount)
-	sql := mc.getQuerySQL()
 	lanLen := len(mc.lantencys)
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
-		rows[i] = mc.Client.QueryRow(sql)
+		rows[i] = mc.Client.QueryRow(mc.Sql)
 		//rows[i], err = mc.Client.Query("SELECT 1")
 		lantency := time.Since(start)
 		mc.lantencys = append(mc.lantencys, &lantency)
@@ -99,10 +123,15 @@ func (mc *MysqlClient) QueryTest() error {
 	}
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
-		rows[i].Scan()
+		err := rows[i].Scan(mc.values...)
 		lantency := time.Since(start)
 		sumLantency := *mc.lantencys[lanLen+i] + lantency
 		mc.lantencys[lanLen+i] = &sumLantency
+		if err != nil {
+			mc.errCount += 1
+			mc.count -= 1
+			fmt.Println("sql query error:", err)
+		}
 	}
 	return err
 }
