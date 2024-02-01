@@ -50,7 +50,22 @@ func main() {
 	engines := make([]client.EngineClient, *fthreads)
 	var count int
 	var err int
+	var rateTokenCount int
 	startTime := time.Now()
+
+	rps_rate := (*frate + *fthreads - 1) / *fthreads
+
+	rate := rps_rate / *fconcurrent
+
+	// token count per second
+	// token count = rps_rate / concurrent count of each client / exec count of each token(10 or 5 or 1)
+	if rate%10 == 0 {
+		rateTokenCount = rate / 10
+	} else if rate%5 == 0 {
+		rateTokenCount = rate / 5
+	} else {
+		rateTokenCount = rate
+	}
 
 	for i := 0; i < *fthreads; i++ {
 		var engineClinet client.EngineClient
@@ -68,32 +83,26 @@ func main() {
 				DB:           "app_traffic_test",
 				User:         "root",
 				SessionCount: *fconcurrent,
+				Complexity:   *fcomplexity,
 			}
 
 		}
 		engines[i] = engineClinet
 
+		// Take 10 tokens each time to avoid too high call frequency of the Take() function
+		// WithoutSlack cancel maxSlack
+
 		go func(index int) {
 			engineClinet.InitClient()
 			defer engineClinet.Close()
-			rps_rate := (*frate + *fthreads - 1) / *fthreads
 			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rps_rate)
-			rate := rps_rate / *fconcurrent
-			// Take 10 tokens each time to avoid too high call frequency of the Take() function
-			// WithoutSlack cancel maxSlack
-			rate_limit := ratelimit.New(rate/10, ratelimit.WithoutSlack)
+			rate_limit := ratelimit.New(rateTokenCount, ratelimit.WithoutSlack)
+			execCount := rate / rateTokenCount
 			for {
 				rate_limit.Take()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
-				engineClinet.Exec()
+				for i := 0; i < execCount; i++ {
+					engineClinet.Exec()
+				}
 			}
 		}(i)
 	}

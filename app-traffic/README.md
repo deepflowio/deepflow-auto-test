@@ -18,6 +18,10 @@ Usage of ./app-traffic:
         Number of threads
   -e string
         Engine of DB [redis, mysql]
+  -c int
+        concurrent connections of each thread, only support mysql
+  -complexity int
+        complexity of query sql, only add count of select key
 ```
 
 - Example:
