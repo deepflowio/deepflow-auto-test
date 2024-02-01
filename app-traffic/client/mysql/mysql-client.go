@@ -22,6 +22,7 @@ type MysqlClient struct {
 	Client       *sql.DB
 	StartTime    time.Time
 	SessionCount int
+	Complexity   int
 }
 
 func (mc *MysqlClient) InitClient() {
@@ -69,12 +70,24 @@ func (mc *MysqlClient) Close() {
 		mc.Client.Close()
 	}
 }
+
+func (mc *MysqlClient) getQuerySQL() (sql string) {
+	sql = "SELECT 0"
+	for i := 1; i < mc.Complexity; i++ {
+		sql = fmt.Sprintf("%s, %d", sql, i)
+	}
+	return sql
+}
+
 func (mc *MysqlClient) QueryTest() error {
 	var err error
-	rows := make([]*sql.Rows, mc.SessionCount)
+	rows := make([]*sql.Row, mc.SessionCount)
+	sql := mc.getQuerySQL()
+	lanLen := len(mc.lantencys)
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
-		rows[i], err = mc.Client.Query("SELECT 1")
+		rows[i] = mc.Client.QueryRow(sql)
+		//rows[i], err = mc.Client.Query("SELECT 1")
 		lantency := time.Since(start)
 		mc.lantencys = append(mc.lantencys, &lantency)
 		if err != nil {
@@ -85,7 +98,11 @@ func (mc *MysqlClient) QueryTest() error {
 		}
 	}
 	for i := 0; i < mc.SessionCount; i++ {
-		defer rows[i].Close()
+		start := time.Now()
+		rows[i].Scan()
+		lantency := time.Since(start)
+		sumLantency := *mc.lantencys[lanLen+i] + lantency
+		mc.lantencys[lanLen+i] = &sumLantency
 	}
 	return err
 }
