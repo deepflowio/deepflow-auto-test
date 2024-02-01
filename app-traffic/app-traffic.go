@@ -22,6 +22,9 @@ var (
 	fduration   = flag.Int("d", 0, "execution time in seconds")
 	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
 	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
+	fmethod     = flag.String("method", "", "method of query, redis:[GET, SET]")
+	fsql        = flag.String("sql", "", "customizable sql of query, only support mysql")
+	fdb         = flag.String("db", "", "db of mysql or redis")
 )
 
 func main() {
@@ -75,15 +78,17 @@ func main() {
 				Password:   *fpasswd,
 				DB:         0,
 				Complexity: *fcomplexity,
+				Method:     *fmethod,
 			}
 		} else if *fengine == "mysql" {
 			engineClinet = &mysql.MysqlClient{
 				Addr:         *fhost,
 				Password:     *fpasswd,
-				DB:           "app_traffic_test",
+				DB:           *fdb,
 				User:         "root",
 				SessionCount: *fconcurrent,
 				Complexity:   *fcomplexity,
+				Sql:          *fsql,
 			}
 
 		}

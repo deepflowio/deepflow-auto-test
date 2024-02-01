@@ -22,6 +22,10 @@ Usage of ./app-traffic:
         concurrent connections of each thread, only support mysql
   -complexity int
         complexity of query sql, only add count of select key
+  -method string
+        method of query, redis:[GET, SET]
+  -sql string
+        customizable sql of query, only support mysql
 ```
 
 - Example:
