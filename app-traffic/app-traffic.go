@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client"
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/grpc"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mysql"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/redis"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
@@ -18,7 +19,7 @@ var (
 	fpasswd     = flag.String("p", "", "DB password")
 	frate       = flag.Int("r", 0, "Packets per second")
 	fthreads    = flag.Int("t", 1, "Number of threads")
-	fengine     = flag.String("e", "", "Engine of DB [redis, mysql]")
+	fengine     = flag.String("e", "", "Engine of DB [redis, mysql], other [grpc]")
 	fduration   = flag.Int("d", 0, "execution time in seconds")
 	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
 	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
@@ -37,7 +38,7 @@ func main() {
 	if *frate == 0 {
 		log.Fatal("frate -r should be assigned")
 	}
-	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis") {
+	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis" && *fengine != "grpc") {
 		log.Fatal("fengine -e should be assigned [redis, mysql]")
 	}
 	if *fduration == 0 {
@@ -91,6 +92,10 @@ func main() {
 				Sql:          *fsql,
 			}
 
+		} else if *fengine == "grpc" {
+			engineClinet = &grpc.GrpcClient{
+				Addr:         *fhost,
+			}
 		}
 		engines[i] = engineClinet
 
