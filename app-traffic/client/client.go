@@ -11,4 +11,5 @@ type EngineClient interface {
 	GetCount() int
 	GetErrCount() int
 	Close()
+	IsReady() bool
 }

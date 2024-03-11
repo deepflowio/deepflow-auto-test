@@ -38,6 +38,10 @@ func (lr *LantencyResult) Print() error {
 	p50 := percentile(lr.Lantencys, 50)
 	p90 := percentile(lr.Lantencys, 90)
 	total := lr.Count + lr.ErrCount
+	if total < 1 || lr.ExecSeconds == 0 {
+		fmt.Printf("error: request Count or ExecSeconds = 0")
+		return nil
+	}
 	fmt.Printf("total: %d, count: %d, error: %d, request/sec: %.2f ", total, lr.Count, lr.ErrCount, float64(total)/lr.ExecSeconds)
 	fmt.Printf("avg: %v  max: %v  p50: %v  p90: %v \n", avg, max, p50, p90)
 	return nil
