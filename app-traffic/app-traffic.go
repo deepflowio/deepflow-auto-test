@@ -8,6 +8,7 @@ import (
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/grpc"
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mongo"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mysql"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/redis"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
@@ -19,7 +20,7 @@ var (
 	fpasswd     = flag.String("p", "", "DB password")
 	frate       = flag.Int("r", 0, "Packets per second")
 	fthreads    = flag.Int("t", 1, "Number of threads")
-	fengine     = flag.String("e", "", "Engine of DB [redis, mysql], other [grpc]")
+	fengine     = flag.String("e", "", "Engine of protocol [redis, mysql, mongo, grpc]")
 	fduration   = flag.Int("d", 0, "execution time in seconds")
 	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
 	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
@@ -38,8 +39,8 @@ func main() {
 	if *frate == 0 {
 		log.Fatal("frate -r should be assigned")
 	}
-	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis" && *fengine != "grpc") {
-		log.Fatal("fengine -e should be assigned [redis, mysql]")
+	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis" && *fengine != "grpc" && *fengine != "mongo") {
+		log.Fatal("fengine -e should be assigned [redis, mysql, grpc, mongo]")
 	}
 	if *fduration == 0 {
 		log.Fatal("fduration -d should be assigned")
@@ -55,12 +56,12 @@ func main() {
 	var count int
 	var err int
 	var rateTokenCount int
-	startTime := time.Now()
 
 	rps_rate := (*frate + *fthreads - 1) / *fthreads
 
 	rate := rps_rate / *fconcurrent
-
+	startChan := make(chan int, *fthreads)
+	var startTime time.Time
 	// token count per second
 	// token count = rps_rate / concurrent count of each client / exec count of each token(10 or 5 or 1)
 	if rate%10 == 0 {
@@ -91,10 +92,16 @@ func main() {
 				Complexity:   *fcomplexity,
 				Sql:          *fsql,
 			}
-
 		} else if *fengine == "grpc" {
 			engineClinet = &grpc.GrpcClient{
-				Addr:         *fhost,
+				Addr: *fhost,
+			}
+		} else if *fengine == "mongo" {
+			engineClinet = &mongo.MongoClient{
+				Addr:       *fhost,
+				Password:   *fpasswd,
+				DB:         *fdb,
+				Complexity: *fcomplexity,
 			}
 		}
 		engines[i] = engineClinet
@@ -108,6 +115,8 @@ func main() {
 			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rps_rate)
 			rate_limit := ratelimit.New(rateTokenCount, ratelimit.WithoutSlack)
 			execCount := rate / rateTokenCount
+			// wait all thread ready
+			<-startChan
 			for {
 				rate_limit.Take()
 				for i := 0; i < execCount; i++ {
@@ -115,6 +124,26 @@ func main() {
 				}
 			}
 		}(i)
+	}
+
+	// wait all client ready
+	for {
+		ready := true
+		for i := 0; i < *fthreads; i++ {
+			if !engines[i].IsReady() {
+				ready = false
+			}
+		}
+		if ready {
+			break
+		}
+
+		time.Sleep(time.Duration(100) * time.Millisecond)
+	}
+	startTime = time.Now()
+	// start all clinet
+	for i := 0; i < *fthreads; i++ {
+		startChan <- 1
 	}
 
 	times := 0

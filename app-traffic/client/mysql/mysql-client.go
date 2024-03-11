@@ -15,6 +15,7 @@ type MysqlClient struct {
 	count     int
 	errCount  int
 	values    []any
+	isReady   bool
 
 	Addr         string
 	Password     string
@@ -63,6 +64,11 @@ func (mc *MysqlClient) InitClient() {
 	for i := range mc.values {
 		mc.values[i] = &data[i]
 	}
+	mc.isReady = true
+}
+
+func (mc *MysqlClient) IsReady() bool {
+	return mc.isReady
 }
 
 func (mc *MysqlClient) Exec() error {

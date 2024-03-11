@@ -13,8 +13,10 @@ type RedisClient struct {
 	lantencys []*time.Duration
 	count     int
 	errCount  int
-	keys      []string
-	hmap      map[string]interface{}
+	isReady   bool
+
+	keys []string
+	hmap map[string]interface{}
 
 	Addr       string
 	Password   string
@@ -42,7 +44,12 @@ func (rc *RedisClient) InitClient() {
 		rc.hmap[key] = value
 	}
 	rc.setMap()
+	rc.isReady = true
 	rc.StartTime = time.Now()
+}
+
+func (rc *RedisClient) IsReady() bool {
+	return rc.isReady
 }
 
 func (rc *RedisClient) setMap() error {
