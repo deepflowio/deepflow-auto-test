@@ -11,12 +11,11 @@ import (
 )
 
 type MongoClient struct {
-	lantencys []*time.Duration
-	count     int
-	errCount  int
-	isReady   bool
-
+	isReady    bool
 	collection *mgo.Collection
+
+	LatencyChan    chan *time.Duration
+	ErrLatencyChan chan *time.Duration
 
 	Addr       string
 	Password   string
@@ -71,13 +70,12 @@ func (mc *MongoClient) Get() {
 	start := time.Now()
 	var result []bson.M
 	err := mc.collection.Find(nil).All(&result)
-	lantency := time.Since(start)
-	mc.lantencys = append(mc.lantencys, &lantency)
+	latency := time.Since(start)
 	if err != nil {
-		mc.errCount += 1
+		mc.ErrLatencyChan <- &latency
 		fmt.Println("query error:", err)
 	} else {
-		mc.count += 1
+		mc.LatencyChan <- &latency
 	}
 }
 
@@ -85,21 +83,4 @@ func (mc *MongoClient) Close() {
 	if mc.Client != nil {
 		mc.Client.Close()
 	}
-}
-
-func (mc *MongoClient) GetCount() int {
-	return mc.count
-}
-
-func (mc *MongoClient) GetErrCount() int {
-	return mc.errCount
-}
-
-func (mc *MongoClient) GetLantency() (lr *common.LantencyResult) {
-	lr = &common.LantencyResult{
-		Lantencys: mc.lantencys,
-		Count:     mc.count,
-		ErrCount:  mc.errCount,
-	}
-	return lr
 }

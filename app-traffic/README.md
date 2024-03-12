@@ -17,7 +17,7 @@ Usage of ./app-traffic:
   -t int
         Number of threads
   -e string
-        Engine of DB [redis, mysql]
+        Engine of DB [redis, mysql, mongo]
   -c int
         concurrent connections of each thread, only support mysql
   -complexity int

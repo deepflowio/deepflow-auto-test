@@ -5,15 +5,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
 	"github.com/go-redis/redis"
 )
 
 type RedisClient struct {
-	lantencys []*time.Duration
-	count     int
-	errCount  int
-	isReady   bool
+	isReady bool
+
+	LatencyChan    chan *time.Duration
+	ErrLatencyChan chan *time.Duration
 
 	keys []string
 	hmap map[string]interface{}
@@ -65,46 +64,27 @@ func (rc *RedisClient) Exec() error {
 	return nil
 }
 
-func (rc *RedisClient) GetCount() int {
-	return rc.count
-}
-
-func (rc *RedisClient) GetErrCount() int {
-	return rc.errCount
-}
-
-func (rc *RedisClient) GetLantency() (lr *common.LantencyResult) {
-	lr = &common.LantencyResult{
-		Lantencys: rc.lantencys,
-		Count:     rc.count,
-		ErrCount:  rc.errCount,
-	}
-	return lr
-}
-
 func (rc *RedisClient) set() {
 	start := time.Now()
 	err := rc.setMap()
-	lantency := time.Since(start)
-	rc.lantencys = append(rc.lantencys, &lantency)
+	latency := time.Since(start)
 	if err != nil {
-		rc.errCount += 1
-		fmt.Println("error: ", err)
+		rc.ErrLatencyChan <- &latency
+		fmt.Println("error:", err)
 	} else {
-		rc.count += 1
+		rc.LatencyChan <- &latency
 	}
 }
 
 func (rc *RedisClient) get() {
 	start := time.Now()
 	_, err := rc.Client.HMGet("appHash", rc.keys...).Result()
-	lantency := time.Since(start)
-	rc.lantencys = append(rc.lantencys, &lantency)
+	latency := time.Since(start)
 	if err != nil {
-		rc.errCount += 1
-		fmt.Println("error: ", err)
+		rc.ErrLatencyChan <- &latency
+		fmt.Println("error:", err)
 	} else {
-		rc.count += 1
+		rc.LatencyChan <- &latency
 	}
 }
 

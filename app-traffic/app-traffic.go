@@ -53,15 +53,21 @@ func main() {
 	}
 
 	engines := make([]client.EngineClient, *fthreads)
-	var count int
-	var err int
-	var rateTokenCount int
+	var rateTokenCount int // exec count of each token
 
 	rps_rate := (*frate + *fthreads - 1) / *fthreads
-
 	rate := rps_rate / *fconcurrent
-	startChan := make(chan int, *fthreads)
+
+	startChan := make(chan int, *fthreads) // use to start all thread
+	stopChan := make(chan int, *fthreads)
+	endChan := make(chan int, 1)
 	var startTime time.Time
+
+	latencyChan := make(chan *time.Duration, 10000)
+	errLatencyChan := make(chan *time.Duration, 10000)
+
+	latencyResult := &common.LatencyResult{}
+	latencyResult.Init()
 	// token count per second
 	// token count = rps_rate / concurrent count of each client / exec count of each token(10 or 5 or 1)
 	if rate%10 == 0 {
@@ -76,34 +82,43 @@ func main() {
 		var engineClinet client.EngineClient
 		if *fengine == "redis" {
 			engineClinet = &redis.RedisClient{
-				Addr:       *fhost,
-				Password:   *fpasswd,
-				DB:         0,
-				Complexity: *fcomplexity,
-				Method:     *fmethod,
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
+				Password:       *fpasswd,
+				DB:             0,
+				Complexity:     *fcomplexity,
+				Method:         *fmethod,
 			}
 		} else if *fengine == "mysql" {
 			engineClinet = &mysql.MysqlClient{
-				Addr:         *fhost,
-				Password:     *fpasswd,
-				DB:           *fdb,
-				User:         "root",
-				SessionCount: *fconcurrent,
-				Complexity:   *fcomplexity,
-				Sql:          *fsql,
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
+				Password:       *fpasswd,
+				DB:             *fdb,
+				User:           "root",
+				SessionCount:   *fconcurrent,
+				Complexity:     *fcomplexity,
+				Sql:            *fsql,
 			}
 		} else if *fengine == "grpc" {
 			engineClinet = &grpc.GrpcClient{
-				Addr: *fhost,
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
 			}
 		} else if *fengine == "mongo" {
 			engineClinet = &mongo.MongoClient{
-				Addr:       *fhost,
-				Password:   *fpasswd,
-				DB:         *fdb,
-				Complexity: *fcomplexity,
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
+				Password:       *fpasswd,
+				DB:             *fdb,
+				Complexity:     *fcomplexity,
 			}
 		}
+
 		engines[i] = engineClinet
 
 		// Take 10 tokens each time to avoid too high call frequency of the Take() function
@@ -114,13 +129,19 @@ func main() {
 			defer engineClinet.Close()
 			log.Printf("[*] Start %s App Traffic %s, date rate %d rps.\n", *fengine, *fhost, rps_rate)
 			rate_limit := ratelimit.New(rateTokenCount, ratelimit.WithoutSlack)
+			// exec count of each token
 			execCount := rate / rateTokenCount
 			// wait all thread ready
 			<-startChan
 			for {
-				rate_limit.Take()
-				for i := 0; i < execCount; i++ {
-					engineClinet.Exec()
+				select {
+				case <-stopChan:
+					return
+				default:
+					rate_limit.Take()
+					for j := 0; j < execCount; j++ {
+						engineClinet.Exec()
+					}
 				}
 			}
 		}(i)
@@ -137,39 +158,48 @@ func main() {
 		if ready {
 			break
 		}
-
 		time.Sleep(time.Duration(100) * time.Millisecond)
 	}
-	startTime = time.Now()
+
+	// accept latencyfrom exec thread
+	go func() {
+		var lt *time.Duration
+		var elt *time.Duration
+		for {
+			select {
+			case <-endChan:
+				return
+			case lt = <-latencyChan: // latencyfrom success exec
+				latencyResult.Append(lt, false)
+			case elt = <-errLatencyChan: // latencyfrom error exec
+				latencyResult.Append(elt, true)
+			default:
+				time.Sleep(time.Duration(10) * time.Millisecond)
+				continue
+			}
+		}
+	}()
+	times := 0
 	// start all clinet
+	startTime = time.Now()
 	for i := 0; i < *fthreads; i++ {
 		startChan <- 1
 	}
-
-	times := 0
 	for {
 		time.Sleep(time.Duration(1) * time.Second)
-		count = 0
-		err = 0
-		for i := 0; i < *fthreads; i++ {
-			count += engines[i].GetCount()
-			err += engines[i].GetErrCount()
-		}
-		fmt.Printf("now request count is %d , err is %d, cost time %.6fs\n", count, err, time.Since(startTime).Seconds())
+		fmt.Printf("now request count about %d , errCount about %d, cost time %.6fs\n", latencyResult.Count, latencyResult.ErrCount, time.Since(startTime).Seconds())
 		times += 1
 		if *fthreads > 0 && times >= *fduration {
+			for i := 0; i < *fthreads; i++ {
+				stopChan <- 1
+			}
+			endChan <- 1
+			latencyResult.ExecSeconds = time.Since(startTime).Seconds()
 			break
 		}
 	}
-	// Calculate total duration
-	lantencyResult := &common.LantencyResult{
-		ExecSeconds: time.Since(startTime).Seconds(),
-	}
-	for i := 0; i < *fthreads; i++ {
-		lantencyResult.Append(engines[i].GetLantency())
-	}
 	// Print result
-	lantencyResult.Print()
+	latencyResult.Print()
 
 	// Forever
 	// <-make(chan bool, 1)

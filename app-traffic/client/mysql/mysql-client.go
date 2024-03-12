@@ -6,16 +6,15 @@ import (
 	"log"
 	"time"
 
-	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type MysqlClient struct {
-	lantencys []*time.Duration
-	count     int
-	errCount  int
-	values    []any
-	isReady   bool
+	values  []any
+	isReady bool
+
+	LatencyChan    chan *time.Duration
+	ErrLatencyChan chan *time.Duration
 
 	Addr         string
 	Password     string
@@ -76,23 +75,6 @@ func (mc *MysqlClient) Exec() error {
 	return err
 }
 
-func (mc *MysqlClient) GetCount() int {
-	return mc.count
-}
-
-func (mc *MysqlClient) GetErrCount() int {
-	return mc.errCount
-}
-
-func (mc *MysqlClient) GetLantency() (lr *common.LantencyResult) {
-	lr = &common.LantencyResult{
-		Lantencys: mc.lantencys,
-		Count:     mc.count,
-		ErrCount:  mc.errCount,
-	}
-	return lr
-}
-
 func (mc *MysqlClient) Close() {
 	if mc.Client != nil {
 		mc.Client.Close()
@@ -113,30 +95,27 @@ func (mc *MysqlClient) getQuerySQL() (sql string) {
 func (mc *MysqlClient) QueryTest() error {
 	var err error
 	rows := make([]*sql.Row, mc.SessionCount)
-	lanLen := len(mc.lantencys)
+	latencys := make([]time.Duration, mc.SessionCount)
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
 		rows[i] = mc.Client.QueryRow(mc.Sql)
 		//rows[i], err = mc.Client.Query("SELECT 1")
-		lantency := time.Since(start)
-		mc.lantencys = append(mc.lantencys, &lantency)
+		latency := time.Since(start)
+		latencys = append(latencys, latency)
 		if err != nil {
-			mc.errCount += 1
-			fmt.Println("sql query error:", err)
-		} else {
-			mc.count += 1
+			fmt.Println("sql query error 0:", err)
 		}
 	}
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
 		err := rows[i].Scan(mc.values...)
-		lantency := time.Since(start)
-		sumLantency := *mc.lantencys[lanLen+i] + lantency
-		mc.lantencys[lanLen+i] = &sumLantency
+		latency := time.Since(start)
+		sumLatency := latencys[i] + latency
 		if err != nil {
-			mc.errCount += 1
-			mc.count -= 1
-			fmt.Println("sql query error:", err)
+			mc.ErrLatencyChan <- &sumLatency
+			fmt.Println("sql query error 1:", err)
+		} else {
+			mc.LatencyChan <- &sumLatency
 		}
 	}
 	return err
