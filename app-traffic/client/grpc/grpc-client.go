@@ -6,7 +6,6 @@ import (
 	"time"
 
 	pb "github.com/deepflowio/deepflow-auto-test/app-traffic/client/grpc/pb"
-	"github.com/deepflowio/deepflow-auto-test/app-traffic/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -14,10 +13,10 @@ import (
 //go:generate  mkdir ./pb
 //go:generate  protoc --go_out=./pb --go_opt=paths=source_relative --go-grpc_out=./pb --go-grpc_opt=paths=source_relative pb.proto
 type GrpcClient struct {
-	lantencys []*time.Duration
-	count     int
-	errCount  int
-	isReady   bool
+	isReady bool
+
+	LatencyChan    chan *time.Duration
+	ErrLatencyChan chan *time.Duration
 
 	Addr      string
 	Client    pb.GreeterClient
@@ -55,30 +54,12 @@ func (gc *GrpcClient) Exec() error {
 		Name5: "hello", Name6: "hello", Name7: "hello", Name8: "hello",
 		Name9: "hello", Name10: "hello",
 	})
-	lantency := time.Since(start)
-	gc.lantencys = append(gc.lantencys, &lantency)
+	latency := time.Since(start)
 	if err != nil {
-		gc.errCount += 1
+		gc.ErrLatencyChan <- &latency
 		log.Printf("unable to send message: %v", err)
 	} else {
-		gc.count += 1
+		gc.LatencyChan <- &latency
 	}
 	return err
-}
-
-func (gc *GrpcClient) GetCount() int {
-	return gc.count
-}
-
-func (gc *GrpcClient) GetErrCount() int {
-	return gc.errCount
-}
-
-func (gc *GrpcClient) GetLantency() (lr *common.LantencyResult) {
-	lr = &common.LantencyResult{
-		Lantencys: gc.lantencys,
-		Count:     gc.count,
-		ErrCount:  gc.errCount,
-	}
-	return lr
 }

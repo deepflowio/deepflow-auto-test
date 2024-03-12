@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475
 	go.uber.org/ratelimit v0.3.0
 	google.golang.org/grpc v1.62.0
 	google.golang.org/protobuf v1.32.0
