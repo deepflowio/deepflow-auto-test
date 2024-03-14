@@ -18,10 +18,9 @@ type GrpcClient struct {
 	LatencyChan    chan *time.Duration
 	ErrLatencyChan chan *time.Duration
 
-	Addr      string
-	Client    pb.GreeterClient
-	StartTime time.Time
-	Conn      *grpc.ClientConn
+	Addr   string
+	Client pb.GreeterClient
+	Conn   *grpc.ClientConn
 }
 
 func (gc *GrpcClient) InitClient() {
@@ -32,7 +31,6 @@ func (gc *GrpcClient) InitClient() {
 	gc.Conn = conn
 	gc.Client = pb.NewGreeterClient(conn)
 	gc.isReady = true
-	gc.StartTime = time.Now()
 }
 
 func (gc *GrpcClient) IsReady() bool {
