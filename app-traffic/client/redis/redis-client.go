@@ -21,7 +21,6 @@ type RedisClient struct {
 	Password   string
 	DB         int
 	Client     *redis.Client
-	StartTime  time.Time
 	Complexity int
 	Method     string
 }
@@ -44,7 +43,6 @@ func (rc *RedisClient) InitClient() {
 	}
 	rc.setMap()
 	rc.isReady = true
-	rc.StartTime = time.Now()
 }
 
 func (rc *RedisClient) IsReady() bool {

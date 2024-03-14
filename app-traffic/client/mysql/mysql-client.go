@@ -21,7 +21,6 @@ type MysqlClient struct {
 	User         string
 	DB           string
 	Client       *sql.DB
-	StartTime    time.Time
 	SessionCount int
 	Complexity   int
 	Sql          string

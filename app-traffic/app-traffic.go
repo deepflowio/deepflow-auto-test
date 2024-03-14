@@ -4,10 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/grpc"
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/http2"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mongo"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mysql"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/redis"
@@ -15,18 +17,23 @@ import (
 	"go.uber.org/ratelimit"
 )
 
+var SUPPORT_ENGINES = []string{"redis", "mysql", "mongo", "grpc", "http2"}
+
 var (
 	fhost       = flag.String("h", "", "Target host:port")
 	fpasswd     = flag.String("p", "", "DB password")
 	frate       = flag.Int("r", 0, "Packets per second")
 	fthreads    = flag.Int("t", 1, "Number of threads")
-	fengine     = flag.String("e", "", "Engine of protocol [redis, mysql, mongo, grpc]")
+	fengine     = flag.String("e", "", fmt.Sprintf("Engine of protocol %v", SUPPORT_ENGINES))
 	fduration   = flag.Int("d", 0, "execution time in seconds")
 	fconcurrent = flag.Int("c", 1, "concurrent connections of each thread")
+
 	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
-	fmethod     = flag.String("method", "", "method of query, redis:[GET, SET]")
+	fmethod     = flag.String("method", "", "method of query, redis:[GET, SET], http2:[GET, POST]")
 	fsql        = flag.String("sql", "", "customizable sql of query, only support mysql")
 	fdb         = flag.String("db", "", "database name, support [redis, mysql, mongo]")
+	fdataSize   = flag.Int("datasize", 1, "body size of http/http2 query")
+	fkeepalive  = flag.Bool("keepalive", true, "keepalive of each http2 client")
 )
 
 func main() {
@@ -39,7 +46,7 @@ func main() {
 	if *frate == 0 {
 		log.Fatal("frate -r should be assigned")
 	}
-	if *fengine == "" || (*fengine != "mysql" && *fengine != "redis" && *fengine != "grpc" && *fengine != "mongo") {
+	if *fengine == "" || !strings.Contains(strings.Join(SUPPORT_ENGINES, " "), *fengine) {
 		log.Fatal("fengine -e should be assigned [redis, mysql, grpc, mongo]")
 	}
 	if *fduration == 0 {
@@ -116,6 +123,16 @@ func main() {
 				Password:       *fpasswd,
 				DB:             *fdb,
 				Complexity:     *fcomplexity,
+			}
+		} else if *fengine == "http2" {
+			engineClinet = &http2.Http2Client{
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
+				Method:         *fmethod,
+				Complexity:     *fcomplexity,
+				DataSize:       *fdataSize,
+				KeepAlive:      *fkeepalive,
 			}
 		}
 

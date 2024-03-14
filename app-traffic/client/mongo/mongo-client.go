@@ -21,7 +21,6 @@ type MongoClient struct {
 	Password   string
 	DB         string
 	Client     *mgo.Session
-	StartTime  time.Time
 	Complexity int
 }
 
