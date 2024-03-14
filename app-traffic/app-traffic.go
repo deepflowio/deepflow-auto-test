@@ -26,7 +26,7 @@ var (
 	fcomplexity = flag.Int("complexity", 1, "complexity of query sql")
 	fmethod     = flag.String("method", "", "method of query, redis:[GET, SET]")
 	fsql        = flag.String("sql", "", "customizable sql of query, only support mysql")
-	fdb         = flag.String("db", "", "db of mysql or redis")
+	fdb         = flag.String("db", "", "database name, support [redis, mysql, mongo]")
 )
 
 func main() {
@@ -201,6 +201,4 @@ func main() {
 	// Print result
 	latencyResult.Print()
 
-	// Forever
-	// <-make(chan bool, 1)
 }
