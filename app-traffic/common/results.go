@@ -18,7 +18,7 @@ type LatencyResult struct {
 }
 
 func (lr *LatencyResult) Init() {
-	lr.h = metrics.NewHistogram(metrics.NewUniformSample(1000000))
+	lr.h = metrics.NewHistogram(metrics.NewUniformSample(10000000))
 	metrics.Register("latency.histogram", lr.h)
 }
 

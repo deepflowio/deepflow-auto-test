@@ -99,12 +99,8 @@ func (mc *MysqlClient) QueryTest() error {
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
 		rows[i] = mc.Client.QueryRow(mc.Sql)
-		//rows[i], err = mc.Client.Query("SELECT 1")
 		latency := time.Since(start)
-		latencys = append(latencys, latency)
-		if err != nil {
-			fmt.Println("sql query error 0:", err)
-		}
+		latencys[i] = latency
 	}
 	for i := 0; i < mc.SessionCount; i++ {
 		start := time.Now()
