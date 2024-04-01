@@ -31,7 +31,7 @@ func (mc *MongoClient) InitClient() {
 	}
 	mc.Client, err = mgo.Dial(mc.Addr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Sprintf("Dial Addr %s Err: %v", mc.Addr, err))
 	}
 	mc.collection = mc.Client.DB(mc.DB).C("test")
 	_, err = mc.collection.RemoveAll(bson.M{})
