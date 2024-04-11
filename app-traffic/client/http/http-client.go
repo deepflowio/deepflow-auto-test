@@ -55,11 +55,11 @@ func (hc *HttpClient) InitClient() {
 	}
 
 	disableKeepAlives := false
-	if hc.KeepAlive == false {
+	if !hc.KeepAlive {
 		disableKeepAlives = true
 	}
 
-	if hc.H2C == true {
+	if hc.H2C {
 		// 使用HTTP/2客户端，跳过TLS握手
 		hc.Client = &http.Client{
 			Transport: &http2.Transport{
@@ -71,7 +71,7 @@ func (hc *HttpClient) InitClient() {
 			},
 		}
 	} else {
-		if hc.TLS == true {
+		if hc.TLS {
 			// 使用支持TLS的HTTP客户端，且不验证TLS证书
 			hc.Client = &http.Client{
 				Transport: &http.Transport{
@@ -121,7 +121,7 @@ func (hc *HttpClient) InitClient() {
 	}
 
 	hc.req.ContentLength = int64(hc.DataSize) // 设置请求体内容长度
-	if hc.KeepAlive == true {
+	if hc.KeepAlive{
 		// 执行HTTP请求，并处理响应
 		resp, err := hc.Client.Do(hc.req)
 		if err != nil {
@@ -165,13 +165,10 @@ func (hc *HttpClient) Get() {
 	} else {
 		hc.LatencyChan <- &latency
 	}
+	// 用于复用连接
+	io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatalf("Read Response Error: %s", err)
-	// }
-	// fmt.Printf("Get Response %d length: %d\n", resp.StatusCode, len(body))
 }
 
 func (hc *HttpClient) Close() {
