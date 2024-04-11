@@ -25,6 +25,15 @@ type RedisClient struct {
 	Method     string
 }
 
+func (rc *RedisClient) Property() {
+	fmt.Printf("RedisClient Property:\n")
+	fmt.Printf("Addr: %s\n", rc.Addr)
+	fmt.Printf("DB: %d\n", rc.DB)
+	fmt.Printf("Password: %s\n", rc.Password)
+	fmt.Printf("Complexity: %d\n", rc.Complexity)
+	fmt.Printf("Method: %s\n", rc.Method)
+}
+
 func (rc *RedisClient) InitClient() {
 	client := redis.NewClient(&redis.Options{
 		Addr:     rc.Addr,
