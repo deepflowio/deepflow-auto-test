@@ -24,6 +24,13 @@ type MongoClient struct {
 	Complexity int
 }
 
+func (mc *MongoClient) Property() {
+	fmt.Printf("MongoClient Property: \n")
+	fmt.Printf("Addr: %s\n", mc.Addr)
+	fmt.Printf("DB: %s\n", mc.DB)
+	fmt.Printf("Complexity: %d\n", mc.Complexity)
+}
+
 func (mc *MongoClient) InitClient() {
 	var err error
 	if mc.DB == "" {
