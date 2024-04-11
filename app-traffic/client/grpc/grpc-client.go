@@ -23,6 +23,11 @@ type GrpcClient struct {
 	Conn   *grpc.ClientConn
 }
 
+func (gc *GrpcClient) Property() {
+	log.Printf("GrpcClient Property:")
+	log.Printf("Addr: %s", gc.Addr)
+}
+
 func (gc *GrpcClient) InitClient() {
 	conn, err := grpc.Dial(gc.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/grpc"
-	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/http2"
+	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/http"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mongo"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/mysql"
 	"github.com/deepflowio/deepflow-auto-test/app-traffic/client/redis"
@@ -17,7 +17,7 @@ import (
 	"go.uber.org/ratelimit"
 )
 
-var SUPPORT_ENGINES = []string{"redis", "mysql", "mongo", "grpc", "http2"}
+var SUPPORT_ENGINES = []string{"redis", "mysql", "mongo", "grpc", "h2c", "https", "http"}
 
 var (
 	fhost       = flag.String("h", "", "Target host:port")
@@ -33,7 +33,7 @@ var (
 	fsql        = flag.String("sql", "", "customizable sql of query, only support mysql")
 	fdb         = flag.String("db", "", "database name, support [redis, mysql, mongo]")
 	fdataSize   = flag.Int("datasize", 1, "body size of http/http2 query")
-	fkeepalive  = flag.Bool("keepalive", true, "keepalive of each http2 client")
+	fkeepalive  = flag.Bool("keepalive", true, "keepalive of each http client")
 )
 
 func main() {
@@ -47,7 +47,7 @@ func main() {
 		log.Fatal("frate -r should be assigned")
 	}
 	if *fengine == "" || !strings.Contains(strings.Join(SUPPORT_ENGINES, " "), *fengine) {
-		log.Fatal("fengine -e should be assigned [redis, mysql, grpc, mongo]")
+		log.Fatal(fmt.Sprintf("fengine -e should be assigned %v", SUPPORT_ENGINES))
 	}
 	if *fduration == 0 {
 		log.Fatal("fduration -d should be assigned")
@@ -124,8 +124,8 @@ func main() {
 				DB:             *fdb,
 				Complexity:     *fcomplexity,
 			}
-		} else if *fengine == "http2" {
-			engineClinet = &http2.Http2Client{
+		} else if *fengine == "h2c" {
+			engineClinet = &http.HttpClient{
 				LatencyChan:    latencyChan,
 				ErrLatencyChan: errLatencyChan,
 				Addr:           *fhost,
@@ -133,10 +133,27 @@ func main() {
 				Complexity:     *fcomplexity,
 				DataSize:       *fdataSize,
 				KeepAlive:      *fkeepalive,
+				H2C:            true,
+				TLS:            false,
+			}
+		} else if *fengine == "https" {
+			engineClinet = &http.HttpClient{
+				LatencyChan:    latencyChan,
+				ErrLatencyChan: errLatencyChan,
+				Addr:           *fhost,
+				Method:         *fmethod,
+				Complexity:     *fcomplexity,
+				DataSize:       *fdataSize,
+				KeepAlive:      *fkeepalive,
+				H2C:            false,
+				TLS:            true,
 			}
 		}
 
 		engines[i] = engineClinet
+		if i == 0 {
+			engineClinet.Property()
+		}
 
 		// Take 10 tokens each time to avoid too high call frequency of the Take() function
 		// WithoutSlack cancel maxSlack

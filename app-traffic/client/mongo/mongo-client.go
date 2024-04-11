@@ -24,6 +24,13 @@ type MongoClient struct {
 	Complexity int
 }
 
+func (mc *MongoClient) Property() {
+	fmt.Printf("MongoClient Property: \n")
+	fmt.Printf("Addr: %s\n", mc.Addr)
+	fmt.Printf("DB: %s\n", mc.DB)
+	fmt.Printf("Complexity: %d\n", mc.Complexity)
+}
+
 func (mc *MongoClient) InitClient() {
 	var err error
 	if mc.DB == "" {
@@ -31,7 +38,7 @@ func (mc *MongoClient) InitClient() {
 	}
 	mc.Client, err = mgo.Dial(mc.Addr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Sprintf("Dial Addr %s Err: %v", mc.Addr, err))
 	}
 	mc.collection = mc.Client.DB(mc.DB).C("test")
 	_, err = mc.collection.RemoveAll(bson.M{})

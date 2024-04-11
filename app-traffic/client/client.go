@@ -5,4 +5,5 @@ type EngineClient interface {
 	InitClient()
 	Close()
 	IsReady() bool
+	Property()
 }
